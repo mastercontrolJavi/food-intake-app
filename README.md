@@ -185,6 +185,10 @@ The unit suite covers curve boundaries/interpolation, all metric scorers, normal
 
 ## Production and Vercel
 
+Production: https://food-intake-app.vercel.app
+
+Repository: https://github.com/mastercontrolJavi/food-intake-app (private)
+
 1. Import the repository into Vercel using Node.js 22 or newer.
 2. Set the two required Supabase public variables for Production and Preview. Add `FDC_API_KEY` only if USDA lookup is desired.
 3. Add production and preview URLs to Supabase Auth redirect configuration.
