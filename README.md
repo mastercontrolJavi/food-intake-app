@@ -114,6 +114,16 @@ Review the generated SQL, apply it to only the intended project, rerun security/
 
 The demo action never runs automatically. It refuses accounts that already contain a goal or meal history.
 
+## Install on iPhone
+
+The production site includes a web app manifest, branded 192px/512px maskable icons, an Apple touch icon, and standalone display metadata. To install it:
+
+1. Open the production URL in Safari.
+2. Tap Share.
+3. Choose **Add to Home Screen**, then **Add**.
+
+The installed app opens directly to Today and uses the same Supabase account as the browser version. Authenticated pages are intentionally not cached for offline use, so logging and review data always come from the live protected database.
+
 ## Environment variables
 
 Required:

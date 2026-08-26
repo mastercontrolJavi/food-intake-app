@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Intake app icon">
+  <rect width="512" height="512" fill="#386f56"/>
+  <circle cx="256" cy="256" r="136" fill="#fffaf0"/>
+  <path d="M183 178v51c0 22 13 35 32 35s32-13 32-35v-51M204 178v48M226 178v48M215 264v82" fill="none" stroke="#386f56" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="309" cy="220" rx="35" ry="44" fill="none" stroke="#386f56" stroke-width="16"/>
+  <path d="M309 264v82" fill="none" stroke="#386f56" stroke-width="16" stroke-linecap="round"/>
+</svg>
