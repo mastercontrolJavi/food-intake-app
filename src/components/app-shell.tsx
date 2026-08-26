@@ -8,7 +8,9 @@ import {
   BarChart3,
   CalendarDays,
   CircleUserRound,
+  Eye,
   History,
+  LogIn,
   LogOut,
   Moon,
   Settings2,
@@ -53,17 +55,24 @@ export function AppShell({
   children,
   displayName,
   email,
+  demoMode = false,
 }: {
   children: React.ReactNode;
   displayName: string | null;
   email: string;
+  demoMode?: boolean;
 }) {
   const pathname = usePathname();
+  const homeHref = demoMode ? "/demo" : "/today";
+  const navigationHref = (href: string) => {
+    if (!demoMode) return href;
+    return href === "/today" ? "/demo" : `/demo${href}`;
+  };
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[15rem_1fr]">
       <aside className="sticky top-0 hidden h-screen border-r bg-card/80 p-5 backdrop-blur lg:flex lg:flex-col">
         <Link
-          href="/today"
+          href={homeHref}
           className="flex items-center gap-3 px-2 py-2"
           aria-label="Intake home"
         >
@@ -74,11 +83,12 @@ export function AppShell({
         </Link>
         <nav className="mt-8 space-y-1" aria-label="Primary navigation">
           {navigation.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(`${href}/`);
+            const targetHref = navigationHref(href);
+            const active = pathname === targetHref || (targetHref !== "/demo" && pathname.startsWith(`${targetHref}/`));
             return (
               <Link
                 key={href}
-                href={href}
+                href={targetHref}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
@@ -102,16 +112,22 @@ export function AppShell({
             </div>
             <ThemeButton />
           </div>
-          <form action={signOutAction}>
-            <Button variant="ghost" className="w-full justify-start">
-              <LogOut /> Sign out
+          {demoMode ? (
+            <Button asChild className="w-full justify-start">
+              <Link href="/login"><LogIn /> Use Intake</Link>
             </Button>
-          </form>
+          ) : (
+            <form action={signOutAction}>
+              <Button variant="ghost" className="w-full justify-start">
+                <LogOut /> Sign out
+              </Button>
+            </form>
+          )}
         </div>
       </aside>
       <div className="min-w-0">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/90 px-4 backdrop-blur lg:hidden">
-          <Link href="/today" className="flex items-center gap-2 font-semibold">
+          <Link href={homeHref} className="flex items-center gap-2 font-semibold">
             <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
               <UtensilsCrossed className="size-4" />
             </span>
@@ -120,6 +136,17 @@ export function AppShell({
           <ThemeButton />
         </header>
         <main className="mx-auto w-full max-w-6xl px-4 py-6 pb-28 sm:px-6 lg:px-10 lg:py-10 lg:pb-10">
+          {demoMode && (
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm">
+              <div className="flex items-center gap-2">
+                <Eye className="size-4 text-primary" />
+                <span><strong>Interactive product demo.</strong> Everything shown is fictional and read-only.</span>
+              </div>
+              <Button asChild size="sm" variant="outline">
+                <Link href="/login">Create your own account</Link>
+              </Button>
+            </div>
+          )}
           {children}
         </main>
       </div>
@@ -128,11 +155,12 @@ export function AppShell({
         aria-label="Mobile navigation"
       >
         {navigation.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(`${href}/`);
+          const targetHref = navigationHref(href);
+          const active = pathname === targetHref || (targetHref !== "/demo" && pathname.startsWith(`${targetHref}/`));
           return (
             <Link
               key={href}
-              href={href}
+              href={targetHref}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-[11px] font-medium text-muted-foreground",

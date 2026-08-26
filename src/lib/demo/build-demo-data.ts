@@ -55,12 +55,14 @@ export type DemoDataset = {
   savedMeals: Insert<"saved_meals">[];
 };
 
-export function buildDemoDataset({ userId, timezone, endDate, goal }: {
+export function buildDemoDataset({ userId, timezone, endDate, goal, dayCount = 35 }: {
   userId: string;
   timezone: string;
   endDate: string;
   goal: GoalRow;
+  dayCount?: number;
 }): DemoDataset {
+  const normalizedDayCount = Math.max(1, Math.floor(dayCount));
   const targets = goalRowToTargets(goal);
   const meals: Insert<"meal_logs">[] = [];
   const hydration: Insert<"hydration_logs">[] = [];
@@ -69,9 +71,9 @@ export function buildDemoDataset({ userId, timezone, endDate, goal }: {
   const reviews: Insert<"daily_reviews">[] = [];
   const measurements: Insert<"body_measurements">[] = [];
 
-  for (let offset = 34; offset >= 0; offset -= 1) {
+  for (let offset = normalizedDayCount - 1; offset >= 0; offset -= 1) {
     const localDate = format(addDays(parseISO(endDate), -offset), "yyyy-MM-dd");
-    const sequence = 34 - offset;
+    const sequence = normalizedDayCount - 1 - offset;
     const weekend = [0, 6].includes(new Date(`${localDate}T12:00:00`).getDay());
     const lowAdherence = sequence % 9 === 3 || sequence % 11 === 5;
     const factor = lowAdherence ? 0.83 : sequence % 7 === 1 ? 1.08 : 0.98 + (sequence % 4) * 0.015;

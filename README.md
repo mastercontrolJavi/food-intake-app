@@ -15,6 +15,7 @@ It measures alignment with targets the user configures. It is not a medical prod
 - Day history plus weekly and monthly reviews, prior-period comparisons, selective charts, tracking coverage, and evidence-backed patterns.
 - Light and dark themes with responsive navigation and mobile-first logging controls.
 - Opt-in deterministic 35-day demo data for testing analytics on a new empty account.
+- Public, read-only portfolio demo with a rolling 70-day fictional history and no account requirement.
 
 ## Architecture
 
@@ -187,6 +188,8 @@ The unit suite covers curve boundaries/interpolation, all metric scorers, normal
 
 Production: https://food-intake-app.vercel.app
 
+Public demo: https://food-intake-app.vercel.app/demo
+
 Repository: https://github.com/mastercontrolJavi/food-intake-app (private)
 
 1. Import the repository into Vercel using Node.js 22 or newer.
@@ -202,5 +205,5 @@ No server secret is required for normal application operation.
 - V1 supports email/password auth only; password reset and social providers are not included.
 - USDA search imports the database nutrient snapshot returned by the search API and expects the user to review portion context before saving. There is no barcode scanner or automatic arbitrary-text nutrition inference.
 - Period pages calculate on request; `period_reviews` is reserved for future caching/auditing.
-- Demo seeding is intentionally limited to a brand-new empty account and is not an automatic production feature.
+- Authenticated demo seeding is intentionally limited to a brand-new empty account. The separate public `/demo` experience is read-only, fictional, and never writes to Supabase.
 - Data export/import and account deletion UI are not included in V1.
