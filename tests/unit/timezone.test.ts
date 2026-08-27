@@ -34,4 +34,15 @@ describe("timezone-safe local dates", () => {
     expect(isValidTimezone("Not/A_Zone")).toBe(false);
     expect(weekRange("2026-08-26")).toEqual({ start: "2026-08-24", end: "2026-08-30" });
   });
+
+  it("rejects ambiguous legacy abbreviations even though Intl resolves them silently", () => {
+    // "CST" is Central Standard Time in multiple countries with different DST rules.
+    // Intl.DateTimeFormat silently resolves it to America/Chicago (which observes DST)
+    // instead of throwing, so isValidTimezone must reject it explicitly rather than
+    // relying on the constructor not throwing.
+    expect(isValidTimezone("CST")).toBe(false);
+    expect(isValidTimezone("PST")).toBe(false);
+    expect(isValidTimezone("EST")).toBe(false);
+    expect(isValidTimezone("UTC")).toBe(true);
+  });
 });
