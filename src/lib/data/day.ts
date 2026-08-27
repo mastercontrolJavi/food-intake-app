@@ -50,36 +50,29 @@ export async function getGoalForDate(supabase: SupabaseClient<Database>, userId:
   return data;
 }
 
-function sumComplete<T>(rows: T[], getter: (row: T) => number | null): number | null {
-  if (!rows.length) return null;
-  const values = rows.map(getter);
-  if (values.some((value) => value == null)) return null;
-  return values.reduce<number>((total, value) => total + (value ?? 0), 0);
+function sumKnown<T>(rows: T[], getter: (row: T) => number | null): number | null {
+  const known = rows.map(getter).filter((value): value is number => value != null);
+  if (!known.length) return null;
+  return known.reduce<number>((total, value) => total + value, 0);
 }
 
 export function totalsFromLogs(
   meals: Tables<"meal_logs">[], hydration: Tables<"hydration_logs">[], activity: Tables<"activity_logs">[],
 ): NutritionTotals {
-  const mealCalories = sumComplete(meals, (meal) => meal.calories);
-  const drinkCalories = hydration.map((drink) => {
+  const mealCalories = sumKnown(meals, (meal) => meal.calories);
+  const drinkCalories = sumKnown(hydration, (drink) => {
     if (drink.calories != null) return drink.calories;
     return ["water", "sparkling_water"].includes(drink.drink_type) ? 0 : null;
   });
-  const drinksKnown = drinkCalories.every((value) => value != null);
-  const hasCalories = meals.length > 0 || hydration.some((drink) => !["water", "sparkling_water"].includes(drink.drink_type));
-  const calories = hasCalories && mealCalories !== null && drinksKnown
-    ? mealCalories + drinkCalories.reduce<number>((sum, value) => sum + (value ?? 0), 0)
-    : hasCalories && meals.length === 0 && drinksKnown
-      ? drinkCalories.reduce<number>((sum, value) => sum + (value ?? 0), 0)
-      : null;
+  const calories = mealCalories == null && drinkCalories == null ? null : (mealCalories ?? 0) + (drinkCalories ?? 0);
   const qualifyingWater = hydration.filter((drink) => ["water", "sparkling_water"].includes(drink.drink_type));
   const stepEntries = activity.filter((entry) => entry.steps != null);
   return {
     calories,
-    proteinG: sumComplete(meals, (meal) => meal.protein_g),
-    carbsG: sumComplete(meals, (meal) => meal.carbs_g),
-    fatG: sumComplete(meals, (meal) => meal.fat_g),
-    fiberG: sumComplete(meals, (meal) => meal.fiber_g),
+    proteinG: sumKnown(meals, (meal) => meal.protein_g),
+    carbsG: sumKnown(meals, (meal) => meal.carbs_g),
+    fatG: sumKnown(meals, (meal) => meal.fat_g),
+    fiberG: sumKnown(meals, (meal) => meal.fiber_g),
     waterMl: qualifyingWater.length ? qualifyingWater.reduce((sum, drink) => sum + drink.volume_ml, 0) : null,
     steps: stepEntries.length ? stepEntries.reduce((sum, entry) => sum + (entry.steps ?? 0), 0) : null,
   };
