@@ -1,13 +1,14 @@
 import { addDays, endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
+const IANA_TIMEZONES = new Set(Intl.supportedValuesOf("timeZone"));
+
 export function isValidTimezone(timezone: string): boolean {
-  try {
-    new Intl.DateTimeFormat("en-US", { timeZone: timezone }).format();
-    return true;
-  } catch {
-    return false;
-  }
+  // Intl.DateTimeFormat also accepts legacy non-IANA aliases like "CST"/"PST"/"EST"
+  // without throwing, silently resolving them to a US zone (e.g. "CST" -> America/Chicago,
+  // which observes DST) even when the user meant a fixed-offset zone elsewhere (e.g.
+  // Mexico's Central Time, which does not). Require a real IANA identifier instead.
+  return timezone === "UTC" || IANA_TIMEZONES.has(timezone);
 }
 
 export function localDateInTimezone(date: Date, timezone: string): string {

@@ -104,7 +104,7 @@ export function ActivityForm({ initial }: { initial: ActivityPrefill }) {
             name="distanceKm"
             type="number"
             min="0"
-            step="0.01"
+            step="any"
             inputMode="decimal"
             defaultValue={initial.distanceKm ?? ""}
           />
@@ -118,7 +118,7 @@ export function ActivityForm({ initial }: { initial: ActivityPrefill }) {
             name="estimatedCaloriesBurned"
             type="number"
             min="0"
-            step="0.1"
+            step="any"
             inputMode="decimal"
             defaultValue={initial.estimatedCaloriesBurned ?? ""}
           />
