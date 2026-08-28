@@ -2,7 +2,7 @@ import { addDays, eachDayOfInterval, format, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import type { AnalyticsDay, AnalyticsMeal } from "@/lib/analytics";
 import type { DayPageData, TimelineItem } from "@/lib/data/day";
-import { totalsFromLogs } from "@/lib/data/day";
+import { mealDetail, totalsFromLogs } from "@/lib/data/day";
 import { goalForLocalDate, goalRowToTargets, type GoalRow } from "@/lib/data/mappers";
 import type { PeriodDataset } from "@/lib/data/period";
 import { localDateInTimezone } from "@/lib/dates/timezone";
@@ -131,7 +131,7 @@ export function getPublicDemoDayData(snapshot: PublicDemoSnapshot, localDate = s
       occurredAt: meal.eaten_at,
       timeLabel: formatInTimeZone(meal.eaten_at, snapshot.timezone, "h:mm a"),
       title: meal.title,
-      detail: [meal.calories != null ? `${Math.round(meal.calories)} kcal` : null, meal.protein_g != null ? `${Math.round(meal.protein_g)}g protein` : null].filter(Boolean).join(" · ") || "Nutrition not entered",
+      detail: mealDetail(meal),
       score: meal.meal_score,
       href: "/demo",
     })),

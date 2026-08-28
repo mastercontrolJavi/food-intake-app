@@ -4,12 +4,25 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient, requireUserId } from "@/lib/supabase/server";
 import { errorMessage, type ActionState } from "@/lib/actions/state";
-import { activitySchema, formBoolean, formString, hydrationSchema, mealSchema } from "@/lib/validation/schemas";
+import { activitySchema, formBoolean, formSelect, formString, hydrationSchema, mealSchema } from "@/lib/validation/schemas";
 import { ensureProfile, getGoalForDate } from "@/lib/data/day";
 import { localDateInTimezone, zonedDateTimeToUtc } from "@/lib/dates/timezone";
 import { goalRowToTargets } from "@/lib/data/mappers";
+import { nutritionWithinLimits, scaleNutrition } from "@/lib/nutrition/quantity";
 import { scoreMeal } from "@/lib/scoring";
 import { calculateAndPersistDailyReview, recalculateDayIfCompleted } from "@/lib/reviews/recalculate";
+
+/**
+ * Records that a reusable meal was logged again. The food page orders reusable foods by
+ * these columns, so leaving them unwritten kept the ordering permanently frozen.
+ * Usage stats are best-effort: a failure here must never lose the meal that was just saved.
+ */
+async function markSavedMealUsed(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, savedMealId: string) {
+  const { data } = await supabase.from("saved_meals").select("use_count").eq("id", savedMealId).eq("user_id", userId).maybeSingle();
+  if (!data) return;
+  await supabase.from("saved_meals").update({ use_count: data.use_count + 1, last_used_at: new Date().toISOString() })
+    .eq("id", savedMealId).eq("user_id", userId);
+}
 
 export async function saveMealAction(_: ActionState, formData: FormData): Promise<ActionState> {
   try {
@@ -20,16 +33,19 @@ export async function saveMealAction(_: ActionState, formData: FormData): Promis
       id: formString(formData, "id") ?? undefined,
       title: formString(formData, "title") ?? "",
       eatenAt: formString(formData, "eatenAt") ?? "",
-      mealType: formString(formData, "mealType"), sourceType: formString(formData, "sourceType"),
+      mealType: formSelect(formData, "mealType"), sourceType: formSelect(formData, "sourceType"),
       restaurantName: formString(formData, "restaurantName"), portionDescription: formString(formData, "portionDescription"),
       quantity: formString(formData, "quantity") ?? "1", nutritionSource: formString(formData, "nutritionSource") ?? "manual",
-      nutritionExternalId: formString(formData, "nutritionExternalId"),
+      nutritionExternalId: formString(formData, "nutritionExternalId"), savedMealId: formString(formData, "savedMealId"),
       calories: formString(formData, "calories"), proteinG: formString(formData, "proteinG"), carbsG: formString(formData, "carbsG"),
       fatG: formString(formData, "fatG"), fiberG: formString(formData, "fiberG"), sodiumMg: formString(formData, "sodiumMg"),
       addedSugarG: formString(formData, "addedSugarG"), notes: formString(formData, "notes"), saveForRepeat: formBoolean(formData, "saveForRepeat"),
     });
     if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Check the meal details." };
     const value = parsed.data;
+    // The nutrition fields describe one unit; the log stores what was actually eaten.
+    const totals = scaleNutrition(value, value.quantity);
+    if (!nutritionWithinLimits(totals)) return { ok: false, message: "That quantity makes the nutrition totals too large to store. Lower the quantity or the per-unit values." };
     const eatenAt = zonedDateTimeToUtc(value.eatenAt, profile.timezone);
     const localDate = localDateInTimezone(eatenAt, profile.timezone);
     let previousDate: string | null = null;
@@ -39,12 +55,12 @@ export async function saveMealAction(_: ActionState, formData: FormData): Promis
       previousDate = localDateInTimezone(new Date(existing.eaten_at), profile.timezone);
     }
     const goal = await getGoalForDate(supabase, userId, localDate);
-    const mealScore = scoreMeal({ calories: value.calories, proteinG: value.proteinG, carbsG: value.carbsG, fatG: value.fatG, fiberG: value.fiberG, waterMl: null, steps: null }, goalRowToTargets(goal));
+    const mealScore = scoreMeal({ calories: totals.calories, proteinG: totals.proteinG, carbsG: totals.carbsG, fatG: totals.fatG, fiberG: totals.fiberG, waterMl: null, steps: null }, goalRowToTargets(goal));
     const payload = {
       user_id: userId, eaten_at: eatenAt.toISOString(), title: value.title, meal_type: value.mealType, source_type: value.sourceType,
       raw_description: value.title, restaurant_name: value.restaurantName, portion_description: value.portionDescription, quantity: value.quantity,
-      calories: value.calories, protein_g: value.proteinG, carbs_g: value.carbsG, fat_g: value.fatG, fiber_g: value.fiberG,
-      sodium_mg: value.sodiumMg, added_sugar_g: value.addedSugarG, notes: value.notes,
+      calories: totals.calories, protein_g: totals.proteinG, carbs_g: totals.carbsG, fat_g: totals.fatG, fiber_g: totals.fiberG,
+      sodium_mg: totals.sodiumMg, added_sugar_g: totals.addedSugarG, notes: value.notes,
       nutrition_source: value.nutritionSource, nutrition_external_id: value.nutritionExternalId,
       nutrition_confidence: mealScore.confidence === "insufficient" ? "unknown" : mealScore.confidence,
       meal_score: mealScore.score, score_breakdown: JSON.parse(JSON.stringify(mealScore.metrics)), updated_at: new Date().toISOString(),
@@ -54,13 +70,15 @@ export async function saveMealAction(_: ActionState, formData: FormData): Promis
       : await supabase.from("meal_logs").insert(payload);
     if (result.error) throw result.error;
     if (value.saveForRepeat) {
+      // A reusable meal is the whole logged portion, so it reloads as quantity 1.
       const { error } = await supabase.from("saved_meals").insert({
         user_id: userId, title: value.title, source_type: value.sourceType, restaurant_name: value.restaurantName,
-        portion_description: value.portionDescription, calories: value.calories, protein_g: value.proteinG,
-        carbs_g: value.carbsG, fat_g: value.fatG, fiber_g: value.fiberG, sodium_mg: value.sodiumMg, added_sugar_g: value.addedSugarG,
+        portion_description: value.portionDescription, calories: totals.calories, protein_g: totals.proteinG,
+        carbs_g: totals.carbsG, fat_g: totals.fatG, fiber_g: totals.fiberG, sodium_mg: totals.sodiumMg, added_sugar_g: totals.addedSugarG,
       });
       if (error) throw error;
     }
+    if (!value.id && value.savedMealId) await markSavedMealUsed(supabase, userId, value.savedMealId);
     if (previousDate && previousDate !== localDate) await recalculateDayIfCompleted(supabase, userId, previousDate);
     await recalculateDayIfCompleted(supabase, userId, localDate);
   } catch (error) {
@@ -124,7 +142,7 @@ export async function quickWaterAction(formData: FormData) {
 export async function saveActivityAction(_: ActionState, formData: FormData): Promise<ActionState> {
   try {
     const supabase = await createClient(); const userId = await requireUserId(); const profile = await ensureProfile(supabase, userId);
-    const parsed = activitySchema.safeParse({ id: formString(formData, "id") ?? undefined, occurredAt: formString(formData, "occurredAt") ?? "", activityType: formString(formData, "activityType") ?? "walking", durationMinutes: formString(formData, "durationMinutes"), steps: formString(formData, "steps"), distanceKm: formString(formData, "distanceKm"), estimatedCaloriesBurned: formString(formData, "estimatedCaloriesBurned"), intensity: formString(formData, "intensity"), notes: formString(formData, "notes") });
+    const parsed = activitySchema.safeParse({ id: formString(formData, "id") ?? undefined, occurredAt: formString(formData, "occurredAt") ?? "", activityType: formString(formData, "activityType") ?? "walking", durationMinutes: formString(formData, "durationMinutes"), steps: formString(formData, "steps"), distanceKm: formString(formData, "distanceKm"), estimatedCaloriesBurned: formString(formData, "estimatedCaloriesBurned"), intensity: formSelect(formData, "intensity"), notes: formString(formData, "notes") });
     if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Check the activity details." };
     const value = parsed.data; const occurredAt = zonedDateTimeToUtc(value.occurredAt, profile.timezone); const localDate = localDateInTimezone(occurredAt, profile.timezone);
     let previousDate: string | null = null;
