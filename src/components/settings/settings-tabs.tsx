@@ -129,7 +129,7 @@ function ProfileSection({ profile }: Pick<Props, "profile">) {
                 name="heightCm"
                 type="number"
                 min="1"
-                step="0.1"
+                step="any"
                 inputMode="decimal"
                 defaultValue={
                   imperial
@@ -147,7 +147,7 @@ function ProfileSection({ profile }: Pick<Props, "profile">) {
                 name="goalWeightKg"
                 type="number"
                 min="1"
-                step="0.1"
+                step="any"
                 inputMode="decimal"
                 defaultValue={
                   imperial
@@ -254,7 +254,7 @@ function GoalsSection({
                   name="proteinTargetG"
                   type="number"
                   min="1"
-                  step="0.1"
+                  step="any"
                   defaultValue={activeGoal?.protein_target_g ?? ""}
                 />
               </div>
@@ -265,7 +265,7 @@ function GoalsSection({
                   name="carbsTargetG"
                   type="number"
                   min="1"
-                  step="0.1"
+                  step="any"
                   defaultValue={activeGoal?.carbs_target_g ?? ""}
                 />
               </div>
@@ -276,7 +276,7 @@ function GoalsSection({
                   name="fatTargetG"
                   type="number"
                   min="1"
-                  step="0.1"
+                  step="any"
                   defaultValue={activeGoal?.fat_target_g ?? ""}
                 />
               </div>
@@ -287,7 +287,7 @@ function GoalsSection({
                   name="fiberTargetG"
                   type="number"
                   min="1"
-                  step="0.1"
+                  step="any"
                   defaultValue={activeGoal?.fiber_target_g ?? ""}
                 />
               </div>
@@ -355,7 +355,7 @@ function GoalsSection({
                   name="addedSugarLimitG"
                   type="number"
                   min="1"
-                  step="0.1"
+                  step="any"
                   defaultValue={activeGoal?.added_sugar_limit_g ?? ""}
                 />
               </div>
@@ -454,7 +454,7 @@ function MeasurementsSection({
                 name="weightKg"
                 type="number"
                 min="1"
-                step="0.1"
+                step="any"
               />
             </div>
             <div className="space-y-2">
@@ -465,7 +465,7 @@ function MeasurementsSection({
                 type="number"
                 min="1"
                 max="75"
-                step="0.1"
+                step="any"
               />
             </div>
             <div className="space-y-2">
@@ -475,7 +475,7 @@ function MeasurementsSection({
                 name="waistCm"
                 type="number"
                 min="1"
-                step="0.1"
+                step="any"
               />
             </div>
             <div className="space-y-2">
@@ -612,7 +612,8 @@ function FoodsSection({
                     name={name}
                     type="number"
                     min="0"
-                    step="0.1"
+                    step="any"
+                    inputMode="decimal"
                     defaultValue={initial ?? ""}
                   />
                 </div>
