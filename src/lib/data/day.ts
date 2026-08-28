@@ -3,6 +3,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { dayRangeUtc, localDateInTimezone } from "@/lib/dates/timezone";
 import { goalRowToTargets } from "./mappers";
+import { formatAmount } from "@/lib/format/number";
 import type { Database, Tables } from "@/types/database";
 import type { NutritionTotals } from "@/lib/scoring";
 
@@ -78,6 +79,15 @@ export function totalsFromLogs(
   };
 }
 
+/** Timeline summary for a meal. Nutrition is already the eaten total, so the quantity is shown as context. */
+export function mealDetail(meal: Pick<Tables<"meal_logs">, "calories" | "protein_g" | "quantity">): string {
+  const nutrition = [
+    meal.calories != null ? `${formatAmount(meal.calories)} kcal` : null,
+    meal.protein_g != null ? `${formatAmount(meal.protein_g)}g protein` : null,
+  ].filter(Boolean).join(" · ") || "Nutrition not entered";
+  return meal.quantity !== 1 ? `×${formatAmount(meal.quantity)} · ${nutrition}` : nutrition;
+}
+
 export async function getDayPageData(supabase: SupabaseClient<Database>, userId: string, localDate?: string): Promise<DayPageData> {
   const profile = await ensureProfile(supabase, userId);
   const date = localDate ?? localDateInTimezone(new Date(), profile.timezone);
@@ -95,7 +105,7 @@ export async function getDayPageData(supabase: SupabaseClient<Database>, userId:
   const hydration = hydrationResult.data ?? [];
   const activity = activityResult.data ?? [];
   const timeline: TimelineItem[] = [
-    ...meals.map((meal) => ({ id: meal.id, kind: "meal" as const, occurredAt: meal.eaten_at, timeLabel: formatInTimeZone(meal.eaten_at, profile.timezone, "h:mm a"), title: meal.title, detail: [meal.calories != null ? `${Math.round(meal.calories)} kcal` : null, meal.protein_g != null ? `${Math.round(meal.protein_g)}g protein` : null].filter(Boolean).join(" · ") || "Nutrition not entered", score: meal.meal_score, href: `/log/food?id=${meal.id}` })),
+    ...meals.map((meal) => ({ id: meal.id, kind: "meal" as const, occurredAt: meal.eaten_at, timeLabel: formatInTimeZone(meal.eaten_at, profile.timezone, "h:mm a"), title: meal.title, detail: mealDetail(meal), score: meal.meal_score, href: `/log/food?id=${meal.id}` })),
     ...hydration.map((drink) => ({ id: drink.id, kind: "hydration" as const, occurredAt: drink.consumed_at, timeLabel: formatInTimeZone(drink.consumed_at, profile.timezone, "h:mm a"), title: drink.drink_type.replaceAll("_", " "), detail: `${drink.volume_ml} ml${drink.calories != null ? ` · ${Math.round(drink.calories)} kcal` : ""}`, score: null, href: `/log/water?id=${drink.id}` })),
     ...activity.map((entry) => ({ id: entry.id, kind: "activity" as const, occurredAt: entry.occurred_at, timeLabel: formatInTimeZone(entry.occurred_at, profile.timezone, "h:mm a"), title: entry.activity_type.replaceAll("_", " "), detail: [entry.duration_minutes != null ? `${entry.duration_minutes} min` : null, entry.steps != null ? `${entry.steps.toLocaleString()} steps` : null].filter(Boolean).join(" · "), score: null, href: `/log/activity?id=${entry.id}` })),
   ].sort((a, b) => parseISO(a.occurredAt).getTime() - parseISO(b.occurredAt).getTime());
