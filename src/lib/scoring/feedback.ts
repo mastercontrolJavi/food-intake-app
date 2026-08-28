@@ -1,9 +1,10 @@
+import { formatAmount } from "@/lib/format/number";
 import type { ScoreMetric } from "./types";
 
 function display(value: number, unit: string): string {
   if (unit === "ml") return `${Math.round(value)} ml`;
   if (unit === "steps") return `${Math.round(value).toLocaleString()} steps`;
-  return `${Math.round(value)}${unit}`;
+  return formatAmount(value, unit);
 }
 
 export function directionFor(actual: number | null, target: number | null): ScoreMetric["direction"] {
