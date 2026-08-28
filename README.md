@@ -186,23 +186,27 @@ The unit suite covers curve boundaries/interpolation, all metric scorers, normal
 
 ## Production and Vercel
 
-Production: https://food-intake-app.vercel.app
+Production: https://intake.javiertpadilla.com
 
-Public demo: https://food-intake-app.vercel.app/demo
+Public demo: https://intake.javiertpadilla.com/demo
+
+Vercel fallback: https://food-intake-app.vercel.app
 
 Repository: https://github.com/mastercontrolJavi/food-intake-app (private)
 
 1. Import the repository into Vercel using Node.js 22 or newer.
 2. Set the two required Supabase public variables for Production and Preview. Add `FDC_API_KEY` only if USDA lookup is desired.
-3. Add production and preview URLs to Supabase Auth redirect configuration.
+3. Keep `https://intake.javiertpadilla.com` as the Supabase Auth Site URL and retain the custom-domain and Vercel-fallback wildcard redirect URLs.
 4. Deploy and run a smoke test for sign-in, one log mutation, Finish Day, and review rendering.
-5. Enable Supabase Auth leaked-password protection in the project dashboard when available for the project plan.
+5. Enable Supabase Auth leaked-password protection on Pro plans and above. As of August 27, 2026, the connected Intake project is on the Free plan, so Supabase rejects this configuration until the project is upgraded. The UI is already prepared: rejected sign-ups receive safe, actionable copy, and existing users whose current password is flagged are directed to Settings to replace it immediately.
+
+The production hostname is a DNS-only Cloudflare CNAME for `intake.javiertpadilla.com` attached to the Vercel project. Keep the Vercel fallback URL configured as an allowed Supabase Auth redirect alongside the custom hostname for preview and rollback access.
 
 No server secret is required for normal application operation.
 
 ## Known limitations
 
-- V1 supports email/password auth only; password reset and social providers are not included.
+- V1 supports email/password auth only; password recovery and social providers are not included. Signed-in users can update their password from Settings.
 - USDA search imports the database nutrient snapshot returned by the search API and expects the user to review portion context before saving. There is no barcode scanner or automatic arbitrary-text nutrition inference.
 - Period pages calculate on request; `period_reviews` is reserved for future caching/auditing.
 - Authenticated demo seeding is intentionally limited to a brand-new empty account. The separate public `/demo` experience is read-only, fictional, and never writes to Supabase.

@@ -6,10 +6,12 @@ import {
   DatabaseZap,
   Heart,
   Ruler,
+  ShieldCheck,
   Trash2,
   UserRound,
 } from "lucide-react";
 import { seedDemoDataAction } from "@/app/actions/demo";
+import { updatePasswordAction } from "@/app/actions/auth";
 import {
   addMeasurementAction,
   deleteCustomFoodAction,
@@ -157,6 +159,28 @@ function ProfileSection({ profile }: Pick<Props, "profile">) {
           </div>
           <FormMessage state={state} />
           <SubmitButton>Save profile</SubmitButton>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+function PasswordSection() {
+  const [state, action, pending] = useActionState(updatePasswordAction, initialActionState);
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><ShieldCheck className="size-5" /> Account security</CardTitle>
+        <CardDescription>Use a unique password you do not reuse on any other site.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form action={action} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="newPassword">New password</Label>
+            <Input id="newPassword" name="password" type="password" autoComplete="new-password" minLength={8} required />
+          </div>
+          <FormMessage state={state} />
+          <Button type="submit" disabled={pending}>{pending ? "Updating…" : "Update password"}</Button>
         </form>
       </CardContent>
     </Card>
@@ -784,7 +808,10 @@ export function SettingsTabs(props: Props) {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="profile">
-        <ProfileSection profile={props.profile} />
+        <div className="space-y-6">
+          <ProfileSection profile={props.profile} />
+          <PasswordSection />
+        </div>
       </TabsContent>
       <TabsContent value="goals">
         <GoalsSection
