@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { formatDayHeading, type DayPageData } from "@/lib/data/day";
+import { formatAmount } from "@/lib/format/number";
 import { scoreDay, type ScoreMetric } from "@/lib/scoring";
 import { ScoreDetailsDialog } from "./score-details-dialog";
 import { TimelineActions } from "./timeline-actions";
@@ -40,7 +41,7 @@ function MetricRow({ metric }: { metric: ScoreMetric }) {
               ? "No target configured"
               : metric.actual == null
                 ? "Not tracked yet"
-                : `${Math.round(metric.actual).toLocaleString()}${metric.unit} of ${Math.round(metric.target).toLocaleString()}${metric.unit}`}
+                : `${formatAmount(metric.actual, metric.unit)} of ${formatAmount(metric.target, metric.unit)}`}
           </div>
         </div>
         {metric.score != null && <span className="number-tabular text-sm font-semibold">{Math.round(metric.score)}</span>}
