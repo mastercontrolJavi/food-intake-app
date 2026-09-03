@@ -53,6 +53,27 @@ test("login actions form one vertical group without the diagonal artifact", asyn
 
   const animatedLabel = submit.locator("span").first();
   expect(await animatedLabel.evaluate((label) => getComputedStyle(label).transitionDuration)).not.toBe("0s");
+
+  await submit.hover();
+  await page.waitForTimeout(350);
+  const [submitAfterHover, floodAfterHover] = await Promise.all([
+    submit.boundingBox(),
+    submit.locator(":scope > span").first().boundingBox(),
+  ]);
+  expect(submitAfterHover && floodAfterHover).toBeTruthy();
+  // The two-pixel difference is the button's one-pixel border on each side.
+  expect(Math.abs(floodAfterHover!.width - submitAfterHover!.width)).toBeLessThanOrEqual(2);
+
+  const modeToggle = page.getByRole("button", { name: "Create an account" });
+  await modeToggle.hover();
+  await page.waitForTimeout(350);
+  expect(await modeToggle.evaluate((element) => Number.parseFloat(getComputedStyle(element, "::after").scale)))
+    .toBe(1);
+
+  await demo.hover();
+  await page.waitForTimeout(350);
+  expect(await demo.evaluate((element) => Number.parseFloat(getComputedStyle(element, "::after").scale)))
+    .toBe(1);
   expect(browserErrors).toEqual([]);
 });
 

@@ -16,6 +16,9 @@ const fieldClassName =
 
 const labelClassName = "text-[0.7rem] font-medium uppercase tracking-[0.14em] text-muted-foreground";
 
+const hoverUnderlineClassName =
+  "relative pb-1 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom-right after:scale-x-0 after:bg-foreground after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100 focus-visible:after:origin-bottom-left focus-visible:after:scale-x-100";
+
 export function AuthForm() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   return <AuthModeForm key={mode} mode={mode} setMode={setMode} />;
@@ -49,7 +52,10 @@ function AuthModeForm({
         <button
           type="button"
           onClick={() => setMode(isSignin ? "signup" : "signin")}
-          className="shrink-0 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+          className={cn(
+            "shrink-0 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-none",
+            hoverUnderlineClassName,
+          )}
         >
           {isSignin ? "Create an account" : "Sign in"}
         </button>
@@ -118,7 +124,10 @@ function AuthModeForm({
         <div className="mt-5 space-y-2 text-center text-sm">
           <Link
             href="/demo"
-            className="font-medium text-foreground underline-offset-4 hover:underline"
+            className={cn(
+              "inline-block font-medium text-foreground focus-visible:outline-none",
+              hoverUnderlineClassName,
+            )}
           >
             Explore the public demo
           </Link>
