@@ -12,7 +12,7 @@ import { FormMessage } from "@/components/form-message";
 import { cn } from "@/lib/utils";
 
 const fieldClassName =
-  "h-auto rounded-none border-0 border-b border-border/70 bg-transparent px-0 pb-2 pt-1 text-base focus-visible:border-b-primary focus-visible:ring-0 md:text-base dark:bg-transparent";
+  "h-auto rounded-none border-0 border-b border-border/70 bg-transparent px-0 pb-2 pt-1 text-base outline-none transition-colors hover:bg-white/[0.02] focus:bg-white/[0.04] focus:outline-none focus-visible:border-b-primary focus-visible:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-0 md:text-base";
 
 const labelClassName = "text-[0.7rem] font-medium uppercase tracking-[0.14em] text-muted-foreground";
 
@@ -55,15 +55,15 @@ function AuthModeForm({
         </button>
       </div>
 
-      <h1 className="mt-4 text-5xl font-medium tracking-tight sm:mt-6 sm:text-6xl [font-family:var(--font-display)]">
+      <h1 className="mt-4 text-5xl font-semibold tracking-tight sm:mt-6 sm:text-6xl">
         {isSignin ? "Login" : "Create account"}
       </h1>
       <p className="mt-3 max-w-sm text-sm text-muted-foreground">
         {isSignin ? "Sign in to continue your daily log." : "Start with your own goals. No automatic prescriptions."}
       </p>
 
-      <form action={action} className="mt-8 flex flex-1 flex-col sm:mt-10">
-        <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+      <form action={action} className="mt-8 w-full max-w-xl sm:mt-10">
+        <div className="grid gap-6">
           <div className="space-y-1.5">
             <Label htmlFor="email" className={labelClassName}>
               Email
@@ -96,34 +96,33 @@ function AuthModeForm({
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className={state.message ? "mt-6" : undefined}>
           <FormMessage state={state} />
         </div>
 
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-6 pt-8 sm:gap-8 sm:pt-12">
-          <div className="max-w-[16rem] space-y-2 text-sm">
-            <Link
-              href="/demo"
-              className="font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              Explore the public demo
-            </Link>
-            <p className="text-xs text-muted-foreground">No account required · Fictional data · Read-only</p>
-          </div>
-          <InteractiveHoverButton
-            type="submit"
-            disabled={pending}
-            className="h-12 w-full shrink-0 border-primary/40 bg-primary/10 px-7 text-[0.7rem] uppercase tracking-[0.14em] text-foreground shadow-lg shadow-primary/20 active:translate-y-px sm:w-auto sm:min-w-44"
+        <InteractiveHoverButton
+          type="submit"
+          disabled={pending}
+          className="mt-6 h-12 w-full border-primary/40 bg-primary/10 px-7 text-[0.7rem] uppercase tracking-[0.14em] text-foreground shadow-lg shadow-primary/20 active:translate-y-px"
+        >
+          {pending ? (
+            <span className="inline-flex items-center gap-2">
+              <Loader2 className="size-3.5 animate-spin" aria-hidden />
+              {submitLabel}
+            </span>
+          ) : (
+            submitLabel
+          )}
+        </InteractiveHoverButton>
+
+        <div className="mt-5 space-y-2 text-center text-sm">
+          <Link
+            href="/demo"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
           >
-            {pending ? (
-              <span className="inline-flex items-center gap-2">
-                <Loader2 className="size-3.5 animate-spin" aria-hidden />
-                {submitLabel}
-              </span>
-            ) : (
-              submitLabel
-            )}
-          </InteractiveHoverButton>
+            Explore the public demo
+          </Link>
+          <p className="text-xs text-muted-foreground">No account required · Fictional data · Read-only</p>
         </div>
       </form>
     </div>
