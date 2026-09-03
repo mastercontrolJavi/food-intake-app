@@ -31,7 +31,7 @@ const navigation = [
 
 const subscribeToHydration = () => () => undefined;
 
-function ThemeButton() {
+function ThemeButton({ showLabel = false }: { showLabel?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme();
   const hydrated = useSyncExternalStore(
     subscribeToHydration,
@@ -42,11 +42,13 @@ function ThemeButton() {
   return (
     <Button
       variant="ghost"
-      size="icon"
-      aria-label="Toggle color theme"
+      size={showLabel ? "default" : "icon"}
+      className={showLabel ? "h-10 w-full justify-start gap-3 px-3 text-muted-foreground" : undefined}
+      aria-label={hydrated ? `Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode` : "Toggle color theme"}
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
       {hydrated && resolvedTheme === "dark" ? <Sun /> : <Moon />}
+      {showLabel && <span>Appearance</span>}
     </Button>
   );
 }
@@ -100,6 +102,9 @@ export function AppShell({
               </Link>
             );
           })}
+          <div className="mt-4 border-t pt-4">
+            <ThemeButton showLabel />
+          </div>
         </nav>
         <div className="mt-auto space-y-3">
           <div className="flex items-center gap-3 rounded-xl border bg-background/70 p-3">
@@ -110,11 +115,10 @@ export function AppShell({
               </p>
               <p className="truncate text-xs text-muted-foreground">{email}</p>
             </div>
-            <ThemeButton />
           </div>
           {demoMode ? (
             <Button asChild className="w-full justify-start">
-              <Link href="/login"><LogIn /> Use Intake</Link>
+              <Link href="/login"><LogIn /> Exit demo / sign up</Link>
             </Button>
           ) : (
             <form action={signOutAction}>

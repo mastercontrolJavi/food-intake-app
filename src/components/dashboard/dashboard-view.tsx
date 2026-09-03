@@ -16,39 +16,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { formatDayHeading, type DayPageData } from "@/lib/data/day";
-import { formatAmount } from "@/lib/format/number";
 import { scoreDay, type ScoreMetric } from "@/lib/scoring";
+import { ProgressCard } from "./progress-card";
 import { ScoreDetailsDialog } from "./score-details-dialog";
 import { TimelineActions } from "./timeline-actions";
 
 function confidenceLabel(value: string) {
   return value[0].toUpperCase() + value.slice(1);
-}
-
-function MetricRow({ metric }: { metric: ScoreMetric }) {
-  const progress = metric.actual != null && metric.target != null && metric.target > 0
-    ? Math.min(100, (metric.actual / metric.target) * 100)
-    : 0;
-  return (
-    <div className="space-y-2">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <div className="text-sm font-medium">{metric.label}</div>
-          <div className="text-xs text-muted-foreground">
-            {metric.target == null
-              ? "No target configured"
-              : metric.actual == null
-                ? "Not tracked yet"
-                : `${formatAmount(metric.actual, metric.unit)} of ${formatAmount(metric.target, metric.unit)}`}
-          </div>
-        </div>
-        {metric.score != null && <span className="number-tabular text-sm font-semibold">{Math.round(metric.score)}</span>}
-      </div>
-      <Progress value={progress} aria-label={`${metric.label} progress`} className="h-2" />
-    </div>
-  );
 }
 
 type DashboardViewProps = {
@@ -82,7 +57,6 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
         <div>
           <p className="text-sm font-medium text-primary">{historyMode ? "Daily review" : demoMode ? "Demo snapshot" : "Today"}</p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{formatDayHeading(day.localDate)}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Times shown in {day.timezone}</p>
         </div>
         {historyMode && (
           <div className="flex flex-wrap items-center gap-2">
@@ -155,17 +129,8 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>Progress</CardTitle>
-            <CardDescription>Unknown values remain unknown and do not count as zero.</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-            {live.metrics.filter((metric) => metric.configured).map((metric) => <MetricRow key={metric.id} metric={metric} />)}
-            {!live.metrics.some((metric) => metric.configured) && <p className="text-sm text-muted-foreground sm:col-span-2">Configure goals to see daily progress.</p>}
-          </CardContent>
-        </Card>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,.6fr)]">
+        <ProgressCard metrics={live.metrics} />
         <Card>
           <CardHeader>
             <CardTitle>{demoMode ? "Demo controls" : "Quick actions"}</CardTitle>
