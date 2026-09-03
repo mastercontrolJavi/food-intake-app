@@ -3,12 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Interactive hover button (magicui). On hover a flood grows from the left to
- * fill the pill while the label slides out and a duplicate slides in with an
- * arrow.
- *
- * The flood is hidden at rest — magicui parks it as a visible dot beside the
- * label, which reads as an unfinished element rather than an affordance.
+ * Interactive hover button (magicui). On hover a flood expands across the full
+ * width while the label slides out and a duplicate slides in with an arrow.
  *
  * The duplicated label is `aria-hidden` so the accessible name stays the label
  * itself rather than being announced twice.
@@ -30,7 +26,7 @@ export function InteractiveHoverButton({
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute top-1/2 left-6 size-2 -translate-y-1/2 scale-0 rounded-full bg-primary opacity-0 transition-all duration-300 group-hover:scale-[100.8] group-hover:opacity-100 motion-reduce:transition-none"
+        className="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover:scale-x-100 motion-reduce:transition-none"
       />
       <span className="relative flex items-center justify-center transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0 motion-reduce:transition-none">
         {children}
