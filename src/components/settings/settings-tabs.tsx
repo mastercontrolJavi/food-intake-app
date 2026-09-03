@@ -95,6 +95,9 @@ function ProfileSection({ profile }: Pick<Props, "profile">) {
                 list="timezone-list"
                 required
               />
+              <p className="text-xs text-muted-foreground">
+                Dashboard and log times are shown in {profile.timezone}.
+              </p>
               <datalist id="timezone-list">
                 <option value="America/Mexico_City" />
                 <option value="America/Los_Angeles" />

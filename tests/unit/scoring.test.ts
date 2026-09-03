@@ -7,6 +7,7 @@ import {
   PROTEIN_CURVE,
   clampScore,
   confidenceFromCoverage,
+  feedbackForMetrics,
   gradeFromScore,
   scoreActivity,
   scoreCalories,
@@ -170,5 +171,42 @@ describe("day and meal scores", () => {
         expect(score!).toBeLessThanOrEqual(100);
       }
     }
+  });
+});
+
+describe("actionable daily feedback", () => {
+  const metric = (overrides: Partial<ScoreMetric>): ScoreMetric => ({
+    id: "proteinG",
+    label: "Protein",
+    score: 100,
+    weight: 20,
+    configured: true,
+    available: true,
+    actual: 150,
+    target: 150,
+    unit: "g",
+    direction: "aligned",
+    ...overrides,
+  });
+
+  it("pairs a precisely hit target with a concrete correction for an overage", () => {
+    const result = feedbackForMetrics([
+      metric({}),
+      metric({ id: "fatG", label: "Fat", score: 88, actual: 76.9, target: 70 }),
+    ]);
+
+    expect(result.summary).toBe(
+      "You hit your protein target exactly, but went slightly over your fat target by 6.9g. Choose leaner protein sources and measure added fats for tomorrow’s split.",
+    );
+    expect(result.topOpportunity).toContain("6.9g");
+  });
+
+  it("suggests a training-aware correction when protein is short", () => {
+    const result = feedbackForMetrics([
+      metric({ score: 74, actual: 112, direction: "below" }),
+    ]);
+
+    expect(result.summary).toContain("38g short of your protein target");
+    expect(result.summary).toContain("lean protein serving earlier in the day");
   });
 });
