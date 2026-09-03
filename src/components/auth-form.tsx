@@ -7,7 +7,7 @@ import { signInAction, signUpAction } from "@/app/actions/auth";
 import { initialActionState } from "@/lib/actions/state";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 import { FormMessage } from "@/components/form-message";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +31,7 @@ function AuthModeForm({
   const [state, action, pending] = useActionState(mode === "signin" ? signInAction : signUpAction, initialActionState);
   const [showPassword, setShowPassword] = useState(false);
   const isSignin = mode === "signin";
+  const submitLabel = isSignin ? "Sign in" : "Sign up";
 
   return (
     <div className="flex flex-1 flex-col">
@@ -109,12 +110,20 @@ function AuthModeForm({
             </Link>
             <p className="text-xs text-muted-foreground">No account required · Fictional data · Read-only</p>
           </div>
-          <Button
+          <InteractiveHoverButton
+            type="submit"
             disabled={pending}
-            className="size-24 shrink-0 whitespace-normal rounded-full text-center text-[0.7rem] font-semibold uppercase tracking-[0.14em] shadow-lg shadow-primary/20"
+            className="h-12 w-full shrink-0 border-primary/40 bg-primary/10 px-7 text-[0.7rem] uppercase tracking-[0.14em] text-foreground shadow-lg shadow-primary/20 active:translate-y-px sm:w-auto sm:min-w-44"
           >
-            {pending ? <Loader2 className="size-5 animate-spin" /> : isSignin ? "Sign in" : "Sign up"}
-          </Button>
+            {pending ? (
+              <span className="inline-flex items-center gap-2">
+                <Loader2 className="size-3.5 animate-spin" aria-hidden />
+                {submitLabel}
+              </span>
+            ) : (
+              submitLabel
+            )}
+          </InteractiveHoverButton>
         </div>
       </form>
     </div>

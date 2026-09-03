@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Fraunces } from "next/font/google";
 import { UtensilsCrossed } from "lucide-react";
 import { AuthForm } from "@/components/auth-form";
+import { IntakeDial } from "@/components/intake-dial";
 import { getClaims } from "@/lib/supabase/server";
 
 export const metadata = { title: "Sign in" };
@@ -37,7 +38,7 @@ function VisualPanel() {
         </span>
         <span className="text-base font-semibold tracking-tight">Intake</span>
       </div>
-      <CompassMark className="relative z-10 mx-auto size-40 text-foreground/70" />
+      <IntakeDial className="relative z-10 mx-auto size-56" />
       <p className="relative z-10 text-[0.7rem] tracking-[0.08em] text-muted-foreground">
         © Intake {new Date().getFullYear()} · Track with intention
       </p>
@@ -50,30 +51,6 @@ function DiagonalLines({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
       <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.3" vectorEffect="non-scaling-stroke" />
       <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.3" vectorEffect="non-scaling-stroke" />
-    </svg>
-  );
-}
-
-function CompassMark({ className }: { className?: string }) {
-  const spokes = Array.from({ length: 8 }, (_, i) => {
-    const angle = (i * Math.PI) / 4;
-    const length = i % 2 === 0 ? 42 : 28;
-    return { x2: 50 + length * Math.sin(angle), y2: 50 - length * Math.cos(angle) };
-  });
-  return (
-    <svg viewBox="0 0 100 100" className={className} aria-hidden>
-      {spokes.map((spoke, i) => (
-        <line
-          key={i}
-          x1="50"
-          y1="50"
-          x2={spoke.x2}
-          y2={spoke.y2}
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      ))}
     </svg>
   );
 }

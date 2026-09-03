@@ -134,3 +134,35 @@
   .number-tabular { font-variant-numeric: tabular-nums; }
   .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
 }
+
+/* Login mark: rings draw themselves in on first paint. */
+@keyframes dial-draw {
+  from { stroke-dashoffset: var(--dial-value); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes dial-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@layer utilities {
+  .dial-arc {
+    stroke-dashoffset: 0;
+    animation: dial-draw 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .dial-segment {
+    animation: dial-fade 0.6s ease-out both;
+  }
+  .dial-plate {
+    animation: dial-fade 0.8s ease-out 0.7s both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dial-arc,
+  .dial-segment,
+  .dial-plate {
+    animation: none;
+  }
+}
