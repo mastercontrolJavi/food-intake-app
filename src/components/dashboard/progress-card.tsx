@@ -27,7 +27,7 @@ function MetricRow({ metric }: { metric: ScoreMetric }) {
   const scoreDescription = `${metric.label} alignment score based on distance from your configured target`;
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="text-sm font-medium">{metric.label}</div>
@@ -40,9 +40,8 @@ function MetricRow({ metric }: { metric: ScoreMetric }) {
           </div>
         </div>
         {metric.score != null && (
-          <div className="shrink-0 text-right" title={scoreDescription}>
+          <div className="hidden shrink-0 text-right sm:block" title={scoreDescription}>
             <div className="number-tabular text-sm font-semibold">{Math.round(metric.score)}%</div>
-            <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">alignment</div>
           </div>
         )}
       </div>
@@ -51,7 +50,7 @@ function MetricRow({ metric }: { metric: ScoreMetric }) {
         targetValue={metric.target}
         label={`${metric.label} intake progress`}
       />
-      {status && <p className={`text-xs font-medium ${status.className}`}>{status.label}</p>}
+      {status && <p className={`hidden text-xs font-medium sm:block ${status.className}`}>{status.label}</p>}
     </div>
   );
 }
@@ -67,7 +66,7 @@ export function ProgressCard({ metrics }: { metrics: ScoreMetric[] }) {
           Green shows intake up to your target; amber or red isolates any overage. Alignment scores measure target accuracy.
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
+      <CardContent className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
         {configuredMetrics.map((metric) => <MetricRow key={metric.id} metric={metric} />)}
         {configuredMetrics.length === 0 && (
           <p className="text-sm text-muted-foreground sm:col-span-2">Configure goals to see daily progress.</p>

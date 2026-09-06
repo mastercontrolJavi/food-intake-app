@@ -196,9 +196,9 @@ describe("actionable daily feedback", () => {
     ]);
 
     expect(result.summary).toBe(
-      "You hit your protein target exactly, but went slightly over your fat target by 6.9g. Choose leaner protein sources and measure added fats for tomorrow’s split.",
+      "You hit your protein target exactly, but went slightly over your fat target by 6.9 g. Choose leaner protein sources and measure added fats for tomorrow’s split.",
     );
-    expect(result.topOpportunity).toContain("6.9g");
+    expect(result.topOpportunity).toContain("6.9 g");
   });
 
   it("suggests a training-aware correction when protein is short", () => {
@@ -206,7 +206,7 @@ describe("actionable daily feedback", () => {
       metric({ score: 74, actual: 112, direction: "below" }),
     ]);
 
-    expect(result.summary).toContain("38g short of your protein target");
+    expect(result.summary).toContain("38 g short of your protein target");
     expect(result.summary).toContain("lean protein serving earlier in the day");
   });
 });

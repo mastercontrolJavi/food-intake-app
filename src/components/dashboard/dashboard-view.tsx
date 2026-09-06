@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Droplets,
-  LockKeyhole,
   Plus,
   Utensils,
   WandSparkles,
@@ -56,7 +55,7 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-primary">{historyMode ? "Daily review" : demoMode ? "Demo snapshot" : "Today"}</p>
+          <p className="text-sm font-medium text-primary">{historyMode ? "Daily review" : "Today"}</p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{formatDayHeading(day.localDate)}</h1>
         </div>
         {historyMode && (
@@ -102,8 +101,8 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
 
       <div className="relative">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-3xl">
-          <div className="absolute -top-16 left-1/4 size-72 rounded-full bg-primary/40 blur-3xl" />
-          <div className="absolute -bottom-16 right-1/4 size-72 rounded-full bg-sky-400/30 blur-3xl dark:bg-sky-500/25" />
+          <div className="absolute -top-16 left-1/4 size-72 rounded-full bg-primary/16 blur-3xl" />
+          <div className="absolute -bottom-16 right-1/4 size-72 rounded-full bg-sky-400/10 blur-3xl dark:bg-sky-500/8" />
         </div>
         <LiquidGlassCard
           draggable={false}
@@ -143,47 +142,40 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
         </LiquidGlassCard>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,.6fr)]">
+      {demoMode ? (
         <ProgressCard metrics={live.metrics} />
-        <Card>
-          <CardHeader>
-            <CardTitle>{demoMode ? "Demo controls" : "Quick actions"}</CardTitle>
-            <CardDescription>{demoMode ? "Editing is disabled so the public example always resets cleanly." : "Designed for a few seconds, not a few minutes."}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {demoMode ? (
-              <>
-                <div className="grid grid-cols-3 gap-2">
-                  {[250, 500, 750].map((volume) => <Button key={volume} disabled variant="outline" className="h-12"><Droplets /> +{volume}</Button>)}
-                </div>
-                <Button asChild className="h-11 w-full"><Link href="/login"><LockKeyhole /> Create an account to log entries</Link></Button>
-              </>
-            ) : (
-              <>
-                <div className="grid grid-cols-3 gap-2">
-                  {[250, 500, 750].map((volume) => (
-                    <form key={volume} action={quickWaterAction}>
-                      <input type="hidden" name="volumeMl" value={volume} />
-                      <Button type="submit" variant="outline" className="h-12 w-full"><Droplets /> +{volume}</Button>
-                    </form>
-                  ))}
-                </div>
-                <div className="grid gap-2 sm:grid-cols-3">
-                  <Button asChild className="h-11"><Link href="/log/food"><Utensils /> Log food</Link></Button>
-                  <Button asChild variant="secondary" className="h-11"><Link href="/log/water"><Droplets /> Drink</Link></Button>
-                  <Button asChild variant="secondary" className="h-11"><Link href="/log/activity"><Activity /> Activity</Link></Button>
-                </div>
-                {!historyMode && (
-                  <form action={finishDayAction}>
-                    <input type="hidden" name="localDate" value={day.localDate} />
-                    <Button type="submit" variant="outline" className="h-11 w-full">{completed ? "Recalculate finished day" : "Finish day"}</Button>
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,.6fr)]">
+          <ProgressCard metrics={live.metrics} />
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick actions</CardTitle>
+              <CardDescription>Designed for a few seconds, not a few minutes.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-3 gap-2">
+                {[250, 500, 750].map((volume) => (
+                  <form key={volume} action={quickWaterAction}>
+                    <input type="hidden" name="volumeMl" value={volume} />
+                    <Button type="submit" variant="outline" className="h-12 w-full"><Droplets /> +{volume}</Button>
                   </form>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                ))}
+              </div>
+              <div className="grid gap-2 sm:grid-cols-3">
+                <Button asChild className="h-11"><Link href="/log/food"><Utensils /> Log food</Link></Button>
+                <Button asChild variant="secondary" className="h-11"><Link href="/log/water"><Droplets /> Drink</Link></Button>
+                <Button asChild variant="secondary" className="h-11"><Link href="/log/activity"><Activity /> Activity</Link></Button>
+              </div>
+              {!historyMode && (
+                <form action={finishDayAction}>
+                  <input type="hidden" name="localDate" value={day.localDate} />
+                  <Button type="submit" variant="outline" className="h-11 w-full">{completed ? "Recalculate finished day" : "Finish day"}</Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <Card>
         <CardHeader className="flex-row items-center justify-between">

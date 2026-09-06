@@ -26,7 +26,7 @@ function metric(
 
 export function scoreDay(totals: NutritionTotals, goals: GoalTargets): ScoreResult {
   const metrics: ScoreMetric[] = [
-    metric("calories", "Calories", SCORE_WEIGHTS.calories, totals.calories, goals.calorieTarget, " kcal", scoreCalories),
+    metric("calories", "Calories", SCORE_WEIGHTS.calories, totals.calories, goals.calorieTarget, "kcal", scoreCalories),
     metric("proteinG", "Protein", SCORE_WEIGHTS.protein, totals.proteinG, goals.proteinTargetG, "g", scoreProtein),
     metric("fiberG", "Fiber", SCORE_WEIGHTS.fiber, totals.fiberG, goals.fiberTargetG, "g", scoreFiber),
     metric("carbsG", "Carbohydrates", SCORE_WEIGHTS.carbs, totals.carbsG, goals.carbsTargetG, "g", scoreCarbs),
