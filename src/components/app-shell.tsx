@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { LiquidGlassCard } from "@/components/ui/liquid-glass";
 import { signOutAction } from "@/app/actions/auth";
 
 const navigation = [
@@ -72,62 +73,80 @@ export function AppShell({
   };
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[15rem_1fr]">
-      <aside className="sticky top-0 hidden h-screen border-r bg-card/80 p-5 backdrop-blur lg:flex lg:flex-col">
-        <Link
-          href={homeHref}
-          className="flex items-center gap-3 px-2 py-2"
-          aria-label="Intake home"
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-y-0 left-0 -z-10 hidden w-[28rem] overflow-hidden lg:block"
+      >
+        <div className="absolute -top-32 -left-20 size-[26rem] rounded-full bg-primary/45 blur-3xl" />
+        <div className="absolute bottom-[-6rem] -left-24 size-[24rem] rounded-full bg-sky-400/30 blur-3xl dark:bg-sky-500/25" />
+      </div>
+      <aside className="sticky top-0 hidden h-screen shrink-0 p-3 lg:flex lg:flex-col">
+        <LiquidGlassCard
+          draggable={false}
+          blurIntensity="lg"
+          glowIntensity="sm"
+          shadowIntensity="sm"
+          borderRadius="24px"
+          className="flex h-full w-full flex-col border border-white/25 bg-card/50 p-5 dark:border-white/10 dark:bg-white/5"
         >
-          <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <UtensilsCrossed className="size-4" />
-          </span>
-          <span className="text-lg font-semibold tracking-tight">Intake</span>
-        </Link>
-        <nav className="mt-8 space-y-1" aria-label="Primary navigation">
-          {navigation.map(({ href, label, icon: Icon }) => {
-            const targetHref = navigationHref(href);
-            const active = pathname === targetHref || (targetHref !== "/demo" && pathname.startsWith(`${targetHref}/`));
-            return (
-              <Link
-                key={href}
-                href={targetHref}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-                  active && "bg-primary/10 text-primary",
-                )}
-              >
-                <Icon className="size-4" />
-                {label}
-              </Link>
-            );
-          })}
-          <div className="mt-4 border-t pt-4">
-            <ThemeButton showLabel />
-          </div>
-        </nav>
-        <div className="mt-auto space-y-3">
-          <div className="flex items-center gap-3 rounded-xl border bg-background/70 p-3">
-            <CircleUserRound className="size-5 text-muted-foreground" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">
-                {displayName ?? "Intake member"}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">{email}</p>
+          <div className="relative z-30 flex h-full flex-col">
+            <Link
+              href={homeHref}
+              className="flex items-center gap-3 px-2 py-2"
+              aria-label="Intake home"
+            >
+              <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
+                <UtensilsCrossed className="size-4" />
+              </span>
+              <span className="text-lg font-semibold tracking-tight">Intake</span>
+            </Link>
+            <nav className="mt-8 space-y-1" aria-label="Primary navigation">
+              {navigation.map(({ href, label, icon: Icon }) => {
+                const targetHref = navigationHref(href);
+                const active = pathname === targetHref || (targetHref !== "/demo" && pathname.startsWith(`${targetHref}/`));
+                return (
+                  <Link
+                    key={href}
+                    href={targetHref}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                      active && "bg-primary/10 text-primary",
+                    )}
+                  >
+                    <Icon className="size-4" />
+                    {label}
+                  </Link>
+                );
+              })}
+              <div className="mt-4 border-t pt-4">
+                <ThemeButton showLabel />
+              </div>
+            </nav>
+            <div className="mt-auto space-y-3">
+              <div className="flex items-center gap-3 rounded-xl border bg-background/70 p-3">
+                <CircleUserRound className="size-5 text-muted-foreground" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {displayName ?? "Intake member"}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">{email}</p>
+                </div>
+              </div>
+              {demoMode ? (
+                <Button asChild className="w-full justify-start">
+                  <Link href="/login"><LogIn /> Exit demo / sign up</Link>
+                </Button>
+              ) : (
+                <form action={signOutAction}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <LogOut /> Sign out
+                  </Button>
+                </form>
+              )}
             </div>
           </div>
-          {demoMode ? (
-            <Button asChild className="w-full justify-start">
-              <Link href="/login"><LogIn /> Exit demo / sign up</Link>
-            </Button>
-          ) : (
-            <form action={signOutAction}>
-              <Button variant="ghost" className="w-full justify-start">
-                <LogOut /> Sign out
-              </Button>
-            </form>
-          )}
-        </div>
+        </LiquidGlassCard>
       </aside>
       <div className="min-w-0">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/90 px-4 backdrop-blur lg:hidden">
