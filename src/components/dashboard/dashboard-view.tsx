@@ -100,7 +100,7 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
       )}
 
       <div className="relative">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-3xl">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute -top-16 left-1/4 size-72 rounded-full bg-primary/16 blur-3xl" />
           <div className="absolute -bottom-16 right-1/4 size-72 rounded-full bg-sky-400/10 blur-3xl dark:bg-sky-500/8" />
         </div>
