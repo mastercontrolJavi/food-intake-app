@@ -84,8 +84,8 @@ describe("mealSchema", () => {
 
 describe("display formatting", () => {
   it("keeps a decimal on small amounts instead of rounding them to zero", () => {
-    expect(formatAmount(0.4, "g")).toBe("0.4g");
-    expect(formatAmount(12.35, "g")).toBe("12.4g");
+    expect(formatAmount(0.4, "g")).toBe("0.4 g");
+    expect(formatAmount(12.35, "g")).toBe("12.4 g");
   });
 
   it("shows large amounts as whole numbers", () => {
@@ -99,8 +99,8 @@ describe("display formatting", () => {
   });
 
   it("shows the quantity on a meal logged more than once over", () => {
-    expect(mealDetail({ quantity: 5, calories: 825, protein_g: 155 })).toBe("×5 · 825 kcal · 155g protein");
-    expect(mealDetail({ quantity: 1, calories: 165, protein_g: 31 })).toBe("165 kcal · 31g protein");
+    expect(mealDetail({ quantity: 5, calories: 825, protein_g: 155 })).toBe("×5 · 825 kcal · 155 g protein");
+    expect(mealDetail({ quantity: 1, calories: 165, protein_g: 31 })).toBe("165 kcal · 31 g protein");
     expect(mealDetail({ quantity: 2, calories: null, protein_g: null })).toBe("×2 · Nutrition not entered");
   });
 });

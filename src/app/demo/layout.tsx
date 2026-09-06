@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function DemoLayout({ children }: { children: React.ReactNode }) {
-  return <AppShell displayName="Alex Morgan" email="Fictional demo profile" demoMode>{children}</AppShell>;
+  return <AppShell displayName="Alex Morgan" email="alex@example.com" demoMode>{children}</AppShell>;
 }
