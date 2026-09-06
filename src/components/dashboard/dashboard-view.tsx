@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { LiquidGlassCard } from "@/components/ui/liquid-glass";
 import { formatDayHeading, type DayPageData } from "@/lib/data/day";
 import { scoreDay, type ScoreMetric } from "@/lib/scoring";
 import { ProgressCard } from "./progress-card";
@@ -99,35 +100,48 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
         </Alert>
       )}
 
-      <Card className="overflow-hidden border-primary/15 bg-card/90">
-        <CardContent className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[14rem_1fr] lg:items-center">
-          <div className="flex items-center gap-5 lg:block lg:text-center">
-            <div className="relative grid size-32 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(var(--primary) ${(score ?? 0) * 3.6}deg, var(--muted) 0deg)` }}>
-              <div className="grid size-[7rem] place-items-center rounded-full bg-card">
-                <div>
-                  <div className="number-tabular text-4xl font-semibold tracking-tight">{score == null ? "—" : Math.round(score)}</div>
-                  <div className="text-xs text-muted-foreground">out of 100</div>
+      <div className="relative">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-3xl">
+          <div className="absolute -top-16 left-1/4 size-72 rounded-full bg-primary/40 blur-3xl" />
+          <div className="absolute -bottom-16 right-1/4 size-72 rounded-full bg-sky-400/30 blur-3xl dark:bg-sky-500/25" />
+        </div>
+        <LiquidGlassCard
+          draggable={false}
+          blurIntensity="lg"
+          glowIntensity="sm"
+          shadowIntensity="sm"
+          borderRadius="24px"
+          className="w-full border border-white/25 bg-card/50 dark:border-white/10 dark:bg-white/5"
+        >
+          <div className="relative z-30 grid gap-8 p-6 sm:p-8 lg:grid-cols-[14rem_1fr] lg:items-center">
+            <div className="flex items-center gap-5 lg:block lg:text-center">
+              <div className="relative grid size-32 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(var(--primary) ${(score ?? 0) * 3.6}deg, var(--muted) 0deg)` }}>
+                <div className="grid size-[7rem] place-items-center rounded-full bg-card">
+                  <div>
+                    <div className="number-tabular text-4xl font-semibold tracking-tight">{score == null ? "—" : Math.round(score)}</div>
+                    <div className="text-xs text-muted-foreground">out of 100</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="lg:mt-3">
-              <div className="text-3xl font-semibold">{grade ?? "—"}</div>
-              <Badge variant="secondary">{confidenceLabel(confidence)} confidence</Badge>
-            </div>
-          </div>
-          <div>
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p className="text-sm font-medium text-primary">{completed ? "Finished day" : "Live alignment"}</p>
-                <h2 className="text-2xl font-semibold tracking-tight">{completed ? "Your daily review" : "How today is tracking"}</h2>
+              <div className="lg:mt-3">
+                <div className="text-3xl font-semibold">{grade ?? "—"}</div>
+                <Badge variant="secondary">{confidenceLabel(confidence)} confidence</Badge>
               </div>
-              <ScoreDetailsDialog metrics={metrics} score={score} />
             </div>
-            <p className="max-w-2xl text-base leading-7 text-muted-foreground">{summary}</p>
-            <p className="mt-4 text-xs text-muted-foreground">Scores measure alignment with your configured targets, not universal health quality.</p>
+            <div>
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-medium text-primary">{completed ? "Finished day" : "Live alignment"}</p>
+                  <h2 className="text-2xl font-semibold tracking-tight">{completed ? "Your daily review" : "How today is tracking"}</h2>
+                </div>
+                <ScoreDetailsDialog metrics={metrics} score={score} />
+              </div>
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground">{summary}</p>
+              <p className="mt-4 text-xs text-muted-foreground">Scores measure alignment with your configured targets, not universal health quality.</p>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </LiquidGlassCard>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,.6fr)]">
         <ProgressCard metrics={live.metrics} />
