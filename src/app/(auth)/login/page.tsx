@@ -30,7 +30,7 @@ function VisualPanel() {
         <span className="text-base font-semibold tracking-tight">Intake</span>
       </div>
       <IntakeDial className="relative z-10 mx-auto size-56" />
-      <p className="relative z-10 text-[0.7rem] tracking-[0.08em] text-muted-foreground">
+      <p className="relative z-10 text-xs tracking-[0.08em] text-gray-400">
         © Intake {new Date().getFullYear()} · Track with intention
       </p>
     </div>
