@@ -101,7 +101,7 @@ export function AppShell({
       <div className="lg:grid lg:grid-cols-[15rem_1fr]">
         <div
           aria-hidden
-          className="pointer-events-none fixed inset-y-0 left-0 -z-10 hidden w-[28rem] overflow-hidden lg:block"
+          className="pointer-events-none fixed inset-y-0 left-0 -z-10 hidden w-[28rem] lg:block"
         >
           <div className="absolute -top-32 -left-20 size-[26rem] rounded-full bg-primary/18 blur-3xl" />
           <div className="absolute bottom-[-6rem] -left-24 size-[24rem] rounded-full bg-sky-400/12 blur-3xl dark:bg-sky-500/10" />
