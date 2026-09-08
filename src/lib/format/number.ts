@@ -11,5 +11,7 @@ export function roundTo(value: number, decimals: number): number {
  */
 export function formatAmount(value: number, unit = ""): string {
   const rounded = Math.abs(value) >= 100 ? Math.round(value) : roundTo(value, 1);
-  return `${rounded.toLocaleString(undefined, { maximumFractionDigits: 1 })}${unit}`;
+  const formatted = rounded.toLocaleString(undefined, { maximumFractionDigits: 1 });
+  const trimmedUnit = unit.trim();
+  return trimmedUnit ? `${formatted} ${trimmedUnit}` : formatted;
 }
