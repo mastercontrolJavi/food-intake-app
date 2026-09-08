@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Droplets,
-  LockKeyhole,
   Plus,
   Utensils,
   WandSparkles,
@@ -16,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { LiquidGlassCard } from "@/components/ui/liquid-glass";
 import { formatDayHeading, type DayPageData } from "@/lib/data/day";
 import { scoreDay, type ScoreMetric } from "@/lib/scoring";
 import { ProgressCard } from "./progress-card";
@@ -55,7 +55,7 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-primary">{historyMode ? "Daily review" : demoMode ? "Demo snapshot" : "Today"}</p>
+          <p className="text-sm font-medium text-primary">{historyMode ? "Daily review" : "Today"}</p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{formatDayHeading(day.localDate)}</h1>
         </div>
         {historyMode && (
@@ -99,77 +99,83 @@ export function DashboardView({ day, historyMode = false, demoMode = false, date
         </Alert>
       )}
 
-      <Card className="overflow-hidden border-primary/15 bg-card/90">
-        <CardContent className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[14rem_1fr] lg:items-center">
-          <div className="flex items-center gap-5 lg:block lg:text-center">
-            <div className="relative grid size-32 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(var(--primary) ${(score ?? 0) * 3.6}deg, var(--muted) 0deg)` }}>
-              <div className="grid size-[7rem] place-items-center rounded-full bg-card">
+      <div className="relative">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-16 left-1/4 size-72 rounded-full bg-primary/16 blur-3xl" />
+          <div className="absolute -bottom-16 right-1/4 size-72 rounded-full bg-sky-400/10 blur-3xl dark:bg-sky-500/8" />
+        </div>
+        <LiquidGlassCard
+          draggable={false}
+          blurIntensity="lg"
+          glowIntensity="sm"
+          shadowIntensity="sm"
+          borderRadius="24px"
+          className="w-full border border-white/25 bg-card/50 dark:border-white/10 dark:bg-white/5"
+        >
+          <div className="relative z-30 grid gap-8 p-6 sm:p-8 lg:grid-cols-[14rem_1fr] lg:items-center">
+            <div className="flex items-center gap-5 lg:block lg:text-center">
+              <div className="relative grid size-32 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(var(--primary) ${(score ?? 0) * 3.6}deg, var(--muted) 0deg)` }}>
+                <div className="grid size-[7rem] place-items-center rounded-full bg-card">
+                  <div>
+                    <div className="number-tabular text-4xl font-semibold tracking-tight">{score == null ? "—" : Math.round(score)}</div>
+                    <div className="text-xs text-muted-foreground">out of 100</div>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:mt-3">
+                <div className="text-3xl font-semibold">{grade ?? "—"}</div>
+                <Badge variant="secondary">{confidenceLabel(confidence)} confidence</Badge>
+              </div>
+            </div>
+            <div>
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <div className="number-tabular text-4xl font-semibold tracking-tight">{score == null ? "—" : Math.round(score)}</div>
-                  <div className="text-xs text-muted-foreground">out of 100</div>
+                  <p className="text-sm font-medium text-primary">{completed ? "Finished day" : "Live alignment"}</p>
+                  <h2 className="text-2xl font-semibold tracking-tight">{completed ? "Your daily review" : "How today is tracking"}</h2>
                 </div>
+                <ScoreDetailsDialog metrics={metrics} score={score} />
               </div>
-            </div>
-            <div className="lg:mt-3">
-              <div className="text-3xl font-semibold">{grade ?? "—"}</div>
-              <Badge variant="secondary">{confidenceLabel(confidence)} confidence</Badge>
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground">{summary}</p>
+              <p className="mt-4 text-xs text-muted-foreground">Scores measure alignment with your configured targets, not universal health quality.</p>
             </div>
           </div>
-          <div>
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p className="text-sm font-medium text-primary">{completed ? "Finished day" : "Live alignment"}</p>
-                <h2 className="text-2xl font-semibold tracking-tight">{completed ? "Your daily review" : "How today is tracking"}</h2>
-              </div>
-              <ScoreDetailsDialog metrics={metrics} score={score} />
-            </div>
-            <p className="max-w-2xl text-base leading-7 text-muted-foreground">{summary}</p>
-            <p className="mt-4 text-xs text-muted-foreground">Scores measure alignment with your configured targets, not universal health quality.</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,.6fr)]">
-        <ProgressCard metrics={live.metrics} />
-        <Card>
-          <CardHeader>
-            <CardTitle>{demoMode ? "Demo controls" : "Quick actions"}</CardTitle>
-            <CardDescription>{demoMode ? "Editing is disabled so the public example always resets cleanly." : "Designed for a few seconds, not a few minutes."}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {demoMode ? (
-              <>
-                <div className="grid grid-cols-3 gap-2">
-                  {[250, 500, 750].map((volume) => <Button key={volume} disabled variant="outline" className="h-12"><Droplets /> +{volume}</Button>)}
-                </div>
-                <Button asChild className="h-11 w-full"><Link href="/login"><LockKeyhole /> Create an account to log entries</Link></Button>
-              </>
-            ) : (
-              <>
-                <div className="grid grid-cols-3 gap-2">
-                  {[250, 500, 750].map((volume) => (
-                    <form key={volume} action={quickWaterAction}>
-                      <input type="hidden" name="volumeMl" value={volume} />
-                      <Button type="submit" variant="outline" className="h-12 w-full"><Droplets /> +{volume}</Button>
-                    </form>
-                  ))}
-                </div>
-                <div className="grid gap-2 sm:grid-cols-3">
-                  <Button asChild className="h-11"><Link href="/log/food"><Utensils /> Log food</Link></Button>
-                  <Button asChild variant="secondary" className="h-11"><Link href="/log/water"><Droplets /> Drink</Link></Button>
-                  <Button asChild variant="secondary" className="h-11"><Link href="/log/activity"><Activity /> Activity</Link></Button>
-                </div>
-                {!historyMode && (
-                  <form action={finishDayAction}>
-                    <input type="hidden" name="localDate" value={day.localDate} />
-                    <Button type="submit" variant="outline" className="h-11 w-full">{completed ? "Recalculate finished day" : "Finish day"}</Button>
-                  </form>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
+        </LiquidGlassCard>
       </div>
+
+      {demoMode ? (
+        <ProgressCard metrics={live.metrics} />
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,.6fr)]">
+          <ProgressCard metrics={live.metrics} />
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick actions</CardTitle>
+              <CardDescription>Designed for a few seconds, not a few minutes.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-3 gap-2">
+                {[250, 500, 750].map((volume) => (
+                  <form key={volume} action={quickWaterAction}>
+                    <input type="hidden" name="volumeMl" value={volume} />
+                    <Button type="submit" variant="outline" className="h-12 w-full"><Droplets /> +{volume}</Button>
+                  </form>
+                ))}
+              </div>
+              <div className="grid gap-2 sm:grid-cols-3">
+                <Button asChild className="h-11"><Link href="/log/food"><Utensils /> Log food</Link></Button>
+                <Button asChild variant="secondary" className="h-11"><Link href="/log/water"><Droplets /> Drink</Link></Button>
+                <Button asChild variant="secondary" className="h-11"><Link href="/log/activity"><Activity /> Activity</Link></Button>
+              </div>
+              {!historyMode && (
+                <form action={finishDayAction}>
+                  <input type="hidden" name="localDate" value={day.localDate} />
+                  <Button type="submit" variant="outline" className="h-11 w-full">{completed ? "Recalculate finished day" : "Finish day"}</Button>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <Card>
         <CardHeader className="flex-row items-center justify-between">

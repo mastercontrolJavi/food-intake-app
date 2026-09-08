@@ -395,7 +395,7 @@ function GoalsSection({
                         ? `${goal.calorie_target} kcal`
                         : null,
                       goal.protein_target_g != null
-                        ? `${goal.protein_target_g}g protein`
+                        ? `${goal.protein_target_g} g protein`
                         : null,
                       goal.water_target_ml != null
                         ? `${goal.water_target_ml}ml water`
@@ -663,7 +663,7 @@ function FoodsSection({
                       {[
                         food.calories != null ? `${food.calories} kcal` : null,
                         food.protein_g != null
-                          ? `${food.protein_g}g protein`
+                          ? `${food.protein_g} g protein`
                           : null,
                       ]
                         .filter(Boolean)
@@ -716,7 +716,7 @@ function FoodsSection({
                       {[
                         meal.calories != null ? `${meal.calories} kcal` : null,
                         meal.protein_g != null
-                          ? `${meal.protein_g}g protein`
+                          ? `${meal.protein_g} g protein`
                           : null,
                       ]
                         .filter(Boolean)

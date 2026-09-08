@@ -83,7 +83,7 @@ export function totalsFromLogs(
 export function mealDetail(meal: Pick<Tables<"meal_logs">, "calories" | "protein_g" | "quantity">): string {
   const nutrition = [
     meal.calories != null ? `${formatAmount(meal.calories)} kcal` : null,
-    meal.protein_g != null ? `${formatAmount(meal.protein_g)}g protein` : null,
+    meal.protein_g != null ? `${formatAmount(meal.protein_g, "g")} protein` : null,
   ].filter(Boolean).join(" · ") || "Nutrition not entered";
   return meal.quantity !== 1 ? `×${formatAmount(meal.quantity)} · ${nutrition}` : nutrition;
 }
