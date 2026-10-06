@@ -8,17 +8,17 @@ import { sceneBeat, sceneWindow } from "../timing";
 
 /**
  * Scene 6 (beats 40–50): cut to the IntakeDial at rest, staged like the app's login panel (mark on the
- * left, words on the right). Its inner arcs replay the app's own login draw timing (globals.css
- * dial-draw: 1.4 s, 240 ms + 140 ms stagger; plate 0.8 s after 0.7 s). Then lockup, tagline, URL.
+ * left, words on the right; the complete
+ * dial at rest). Then wordmark, tagline, URL.
  */
-const MS = 60 / 1000;
 
 export function Resolve({ orientation }: { orientation: Orientation }) {
   const frame = useCurrentFrame();
   const { durationInFrames } = sceneWindow("resolve");
   const portrait = orientation === "portrait";
-  const arcDraw = [0, 1, 2].map((i) => tween(frame, (240 + i * 140) * MS, (240 + i * 140 + 1400) * MS, 0, 1, EASE_OUT));
-  const plate = tween(frame, 700 * MS, 1500 * MS, 0, 1, (t) => t);
+  // Accessory pass: the cut lands on the complete dial at rest (no replay of the login draw-in).
+  const arcDraw = [1, 1, 1];
+  const plate = 1;
   const lockup = tween(frame, sceneBeat("resolve", 42), sceneBeat("resolve", 42) + 22, 0, 1, EASE_OUT);
   const url = tween(frame, sceneBeat("resolve", 44), sceneBeat("resolve", 44) + 20, 0, 1, EASE_OUT);
   const drift = 1 + 0.012 * (frame / durationInFrames);

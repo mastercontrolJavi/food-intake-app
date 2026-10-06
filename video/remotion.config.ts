@@ -4,7 +4,6 @@ import { enableTailwind } from "@remotion/tailwind-v4";
 
 Config.overrideWebpackConfig(enableTailwind);
 Config.setVideoImageFormat("png");
-Config.setPixelFormat("yuv420p");
 Config.setChromiumOpenGlRenderer("swangle");
 Config.setConcurrency(Number(process.env.REMOTION_CONCURRENCY ?? 3));
 

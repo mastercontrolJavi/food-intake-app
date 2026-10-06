@@ -5,8 +5,7 @@ import { Camera, frameRect, mixCam, pageToScreen, union, type CameraState } from
 import { RingWatermark, Stage } from "../components/film/stage";
 import { bandMask, uiMask, type Orientation } from "../layout";
 import { usePageRects } from "../lib/measure";
-import { EASE_OUT, tween } from "../lib/motion";
-import { sceneBeat, sceneWindow } from "../timing";
+import { sceneWindow } from "../timing";
 
 /**
  * Scene 5 (beats 32–40): the weekly review's evidence. 16:9 frames the score trend, tracking coverage
@@ -26,7 +25,7 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
   const { rootRef, ref, rects } = usePageRects(["chart", "coverage", "insights", "firstInsight"] as const);
   let cam: CameraState = { x: 700, y: 500, s: 2 };
   let cam0: CameraState | undefined;
-  let style: React.CSSProperties = { opacity: tween(frame, 0, 10, 0, 1, EASE_OUT), ...uiMask(orientation, false) };
+  let style: React.CSSProperties = { ...uiMask(orientation, false) }; // hard cut on the beat, no fade
   if (rects) {
     const area = portrait
       ? { x: rects.insights.x, y: rects.insights.y, w: rects.insights.w, h: rects.firstInsight.y + rects.firstInsight.h + 14 - rects.insights.y }
@@ -41,8 +40,10 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
       style = { ...style, ...bandMask(orientation, false, top, bottom) };
     }
   }
-  const chartReveal = tween(frame, 6, 78, 0, 1, EASE_OUT);
-  const insight0 = tween(frame, sceneBeat("patterns", 32.5) - 6, sceneBeat("patterns", 32.5) + 14, 0, 1, EASE_OUT);
+  // Accessory pass: no chart draw-on and no insight build — the cut lands on the finished review, and the
+  // insight sentence gets the whole scene to be read. Only the slow camera drift moves.
+  const chartReveal = 1;
+  const insight0 = 1;
   return (
     <Stage>
       <RingWatermark orientation={orientation} cam={cam0 ? cam : undefined} cam0={cam0} />

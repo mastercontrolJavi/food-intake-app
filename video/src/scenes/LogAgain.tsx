@@ -68,7 +68,7 @@ function LogPart({ orientation }: { orientation: Orientation }) {
     cursor = cursorPosition(frame, [{ from: [t.cx + 210, t.cy + 120], to: [t.cx + 4, t.cy + 2], start: 4, end: CLICK - 8 }]);
   }
   const press = pressAt(frame, CLICK);
-  const enter = tween(frame, 0, 14, 0, 1, EASE_OUT);
+  const enter = 1; // hard cut on the beat: land on content, no fade
   // The page header sits right above the cards; fade it out just above the card's top edge.
   const top = rects ? pageToScreen(cam, width, height, rects.recent.x, rects.recent.y)[1] : undefined;
   const style: React.CSSProperties = { opacity: enter, ...bandMask(orientation, true, top) };
