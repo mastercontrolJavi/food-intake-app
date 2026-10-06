@@ -8,3 +8,4 @@ out/stills/raw/
 out/tmp/
 *.log
 out/animatic-strip/
+out/stills/**/*.png
