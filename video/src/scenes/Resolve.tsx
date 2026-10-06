@@ -43,14 +43,14 @@ export function Resolve({ orientation }: { orientation: Orientation }) {
             }}
           >
             {/* App wordmark: font-semibold tracking-tight (the dial is the mark, so the tile is dropped) */}
-            <span style={{ fontFamily: "Geist, sans-serif", fontWeight: 600, letterSpacing: "-0.025em", fontSize: portrait ? 76 : 72, color: "var(--foreground)" }}>Intake</span>
+            <span style={{ fontFamily: "Geist, sans-serif", fontWeight: 600, letterSpacing: "-0.025em", fontSize: portrait ? 132 : 128, lineHeight: 1, color: "var(--foreground)" }}>Intake</span>
           </div>
           <KineticText
             frame={frame}
             enter={sceneBeat("resolve", 43)}
-            fontSize={portrait ? 92 : 104}
+            fontSize={portrait ? 76 : 80}
             align={words.align}
-            style={{ marginTop: portrait ? 64 : 72 }}
+            style={{ marginTop: portrait ? 40 : 44, fontWeight: 500 }}
             lines={[{ text: "Track with intention." }]}
           />
           <div

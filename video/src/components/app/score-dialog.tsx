@@ -14,6 +14,7 @@ export function ScoreDialog({
   rowReveal,
   resultReveal = 1,
   weightTint,
+  rowLight,
   resultTint = 0,
   weightRefs,
   style,
@@ -26,6 +27,8 @@ export function ScoreDialog({
   resultReveal?: number;
   /** 0..1 per row: momentary primary tint on "Weight NN%" as a ring segment lands (film-only emphasis). */
   weightTint?: number[];
+  /** 0..1 per row: momentary row highlight as its ring segment lights (film-only emphasis, no layout change). */
+  rowLight?: number[];
   resultTint?: number;
   weightRefs?: React.MutableRefObject<(HTMLDivElement | null)[]>;
   style?: React.CSSProperties;
@@ -51,7 +54,14 @@ export function ScoreDialog({
         {configured.map((metric, i) => {
           const t = rowReveal?.[i] ?? 1;
           return (
-            <div key={metric.id} className="grid grid-cols-[1fr_auto] gap-4 py-3">
+            <div key={metric.id} className="relative grid grid-cols-[1fr_auto] gap-4 py-3">
+              {rowLight?.[i] ? (
+                <div
+                  aria-hidden
+                  className="absolute inset-y-1 -inset-x-2 rounded-lg"
+                  style={{ background: "color-mix(in oklab, var(--primary) 12%, transparent)", opacity: rowLight[i] }}
+                />
+              ) : null}
               <div style={{ opacity: t, transform: `translateY(${(1 - t) * 6}px)` }}>
                 <div className="font-medium">{metric.label}</div>
                 <div className="text-sm text-muted-foreground">

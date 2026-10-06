@@ -50,7 +50,11 @@ function totals(meals: MealKey[], waterMl: number, steps: number): NutritionTota
 
 function day(meals: MealKey[], waterMl: number, steps: number) {
   const r = scoreDay(totals(meals, waterMl, steps), goals);
+  // Each metric's share of the final score: score × weight ÷ available weight (src/lib/scoring/weighted.ts).
+  const availableWeight = r.metrics.filter((m) => m.available && m.score != null).reduce((n, m) => n + m.weight, 0);
+  const contributions = r.metrics.map((m) => (m.available && m.score != null && availableWeight ? (m.score * m.weight) / availableWeight : 0));
   return {
+    contributions,
     score: r.score, roundedScore: r.score == null ? null : Math.round(r.score), grade: r.grade,
     confidence: r.confidence, summary: r.summary,
     metrics: r.metrics.map((m) => ({

@@ -3,8 +3,8 @@ import { AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig } from "remotio
 import { LogFoodPage, TodayPage, type Mark } from "../components/app/pages";
 import { Camera, frameRect, mixCam, pageToScreen, type CameraState } from "../components/film/camera";
 import { Cursor, cursorPosition, pressAt } from "../components/film/cursor";
-import { Caption } from "../components/film/kinetic";
-import { RingWatermark, Stage } from "../components/film/stage";
+import { RingCaption } from "../components/film/kinetic";
+import { Stage } from "../components/film/stage";
 import { bandMask, STAGE, UI_BOX, uiMask, type Orientation } from "../layout";
 import { BEFORE_METRICS, DAY, TIMELINE } from "../lib/fixtures";
 import { usePageRects } from "../lib/measure";
@@ -26,25 +26,23 @@ export function mealHighlight(frame: number, click: number) {
 export function LogAgain({ orientation }: { orientation: Orientation }) {
   const frame = useCurrentFrame();
   const { durationInFrames } = sceneWindow("log");
-  const st = STAGE[orientation];
-  const portrait = orientation === "portrait";
   const highlight = mealHighlight(frame, CLICK);
   return (
     <Stage>
-      <RingWatermark orientation={orientation} highlight={highlight} />
       <Sequence durationInFrames={CUT} layout="none">
         <LogPart orientation={orientation} />
       </Sequence>
       <Sequence from={CUT} layout="none">
         <TimelinePart orientation={orientation} />
       </Sequence>
-      <Caption
+      {/* The ring stays up through the cut: scene 3 continues it in the same spot. */}
+      <RingCaption
         frame={frame}
+        orientation={orientation}
         text="Log again in one tap."
         enter={sceneBeat("log", 5.5)}
         exit={Math.min(durationInFrames, sceneBeat("log", 11.5))}
-        fontSize={st.caption.fontSize}
-        style={{ position: "absolute", left: st.caption.left, right: portrait ? 0 : undefined, top: st.caption.top, textAlign: portrait ? "center" : "left" }}
+        highlight={highlight}
       />
     </Stage>
   );
@@ -92,11 +90,11 @@ function TimelinePart({ orientation }: { orientation: Orientation }) {
     const row = rects.newRow;
     // Frame the last rows of the timeline, weighted to the new row's title and meal score.
     const area = orientation === "landscape"
-      ? { x: rects.timeline.x, y: row.y - 250, w: rects.timeline.w, h: row.h + 266 }
+      ? { x: rects.timeline.x, y: row.y - 170, w: 780, h: row.h + 180 }
       : { x: rects.timeline.x, y: row.y - 250, w: rects.timeline.w, h: row.h + 270 };
     const a = frameRect(area, box, width, height);
-    const b = { ...a, x: a.x + 5, s: a.s * 1.015 };
-    cam = mixCam(a, b, frame / 180);
+    const b = { ...a, x: a.x + 6, s: a.s * 1.04 };
+    cam = mixCam(a, b, frame / 180); // slow push through the hold
   }
   const reveal = tween(frame, 2, 18, 0, 1, EASE_OUT);
   return (

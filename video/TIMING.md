@@ -20,14 +20,15 @@ Readability minimum = 0.4 s + 0.3 s × words (brief §2.6).
 | 10 | water | 2,250 ml of 2,800 ml (after +500) | 5 | 508–621 | 1.90 | 1.9 | ✅ |
 | 11 | water | 95 · A (score card) | 2 | 643–719 | 1.28 | 1.0 | ✅ |
 | 12 | hero | Transparent score breakdown (+ 7 rows, result) | 8 | 728–1151 | 7.07 | 2.8 | ✅ |
-| 13 | hero | Ring: 95 / out of 100 | 3 | 760–1151 | 6.53 | 1.3 | ✅ |
-| 14 | hero | Every point, explained. | 3 | 928–1138 | 3.52 | 1.3 | ✅ |
-| 15 | patterns | Pattern insights · Deterministic observations with explicit evidence thresholds. | 8 | 1153–1439 | 4.78 | 2.8 | ✅ |
-| 16 | patterns | Insight title: Water target opportunity (+ badges Hydration · Moderate evidence) | 3 | 1153–1439 | 4.78 | 1.3 | ✅ |
-| 17 | patterns | Insight message: Water intake was below your configured target on 4 of 7 tracked days. | 13 | 1153–1439 | 4.78 | 4.3 | ✅ |
-| 18 | resolve | Intake | 1 | 1516–1799 | 4.73 | 0.7 | ✅ |
-| 19 | resolve | Track with intention. | 3 | 1558–1799 | 4.03 | 1.3 | ✅ |
-| 20 | resolve | intake.javiertpadilla.com | 1 | 1588–1799 | 3.53 | 0.7 | ✅ |
+| 13 | hero | Every point, explained. | 3 | 928–1138 | 3.52 | 1.3 | ✅ |
+| 14 | patterns | Pattern insights · Deterministic observations with explicit evidence thresholds. | 8 | 1153–1439 | 4.78 | 2.8 | ✅ |
+| 15 | patterns | Insight title: Water target opportunity (+ badges Hydration · Moderate evidence) | 3 | 1153–1439 | 4.78 | 1.3 | ✅ |
+| 16 | patterns | Insight message: Water intake was below your configured target on 4 of 7 tracked days. | 13 | 1153–1439 | 4.78 | 4.3 | ✅ |
+| 17 | patterns | Patterns, only with evidence. | 4 | 1165–1439 | 4.58 | 1.6 | ✅ |
+| 18 | hero | Ring centre count-up → 95 / out of 100 (final value) | 3 | 900–1151 | 4.20 | 1.3 | ✅ |
+| 19 | resolve | Intake | 1 | 1516–1799 | 4.73 | 0.7 | ✅ |
+| 20 | resolve | Track with intention. | 3 | 1558–1799 | 4.03 | 1.3 | ✅ |
+| 21 | resolve | intake.javiertpadilla.com | 1 | 1588–1799 | 3.53 | 0.7 | ✅ |
 
 ## Cuts vs beats — all on the beat
 

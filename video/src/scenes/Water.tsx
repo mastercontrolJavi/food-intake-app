@@ -2,9 +2,9 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { TodayPage, type Mark } from "../components/app/pages";
 import { Camera, frameRect, mixCam, pageToScreen, union, type CameraState } from "../components/film/camera";
 import { Cursor, cursorPosition, pressAt } from "../components/film/cursor";
-import { Caption } from "../components/film/kinetic";
-import { RingWatermark, Stage } from "../components/film/stage";
-import { bandMask, STAGE, UI_BOX, type Orientation } from "../layout";
+import { RingCaption } from "../components/film/kinetic";
+import { Stage } from "../components/film/stage";
+import { bandMask, UI_BOX, type Orientation } from "../layout";
 import { AFTER_METRICS, BEFORE_METRICS, DAY, TIMELINE } from "../lib/fixtures";
 import { usePageRects, type Rect } from "../lib/measure";
 import { EASE_IN_OUT, EASE_OUT, tween } from "../lib/motion";
@@ -36,12 +36,9 @@ export function Water({ orientation }: { orientation: Orientation }) {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const { durationInFrames } = sceneWindow("water");
-  const st = STAGE[orientation];
-  const portrait = orientation === "portrait";
   const { rootRef, ref, rects } = usePageRects(TODAY_KEYS);
 
   let cam: CameraState = { x: 720, y: 600, s: 2 };
-  let camEnd: CameraState | undefined;
   let cursor: [number, number] = [0, 0];
   let bandTop: number | undefined;
   if (rects) {
@@ -58,7 +55,6 @@ export function Water({ orientation }: { orientation: Orientation }) {
     const a1 = { ...a0, x: a0.x - 4, s: a0.s * 1.015 };
     const b = heroCardCamera(rects as TodayRects, orientation, width, height);
     const drift = mixCam(a0, a1, tween(frame, 0, PAN_START, 0, 1, (t) => t));
-    camEnd = b;
     const panT = tween(frame, PAN_START, PAN_END, 0, 1, EASE_IN_OUT);
     cam = mixCam(drift, b, panT);
     if (orientation === "portrait") {
@@ -69,7 +65,7 @@ export function Water({ orientation }: { orientation: Orientation }) {
     const p = rects.plus500;
     const w = rects.why;
     cursor = cursorPosition(frame, [
-      { from: [p.cx - 260, p.cy + 190], to: [p.cx + 24, p.cy + 9], start: 2, end: WATER_CLICK - 8 },
+      { from: orientation === "portrait" ? [p.cx + 140, p.cy - 120] : [p.cx - 260, p.cy + 190], to: [p.cx + 24, p.cy + 9], start: 2, end: WATER_CLICK - 8 },
       { from: [p.cx + 24, p.cy + 9], to: [w.cx - 30, w.cy + 3], start: SCORE_UPDATE + 14, end: durationInFrames - 4, bend: -0.12 },
     ]);
   }
@@ -85,8 +81,6 @@ export function Water({ orientation }: { orientation: Orientation }) {
 
   return (
     <Stage>
-      {/* Parallax referenced to the closing camera, so the ring rests exactly where the hero picks it up. */}
-      <RingWatermark orientation={orientation} cam={camEnd ? cam : undefined} cam0={camEnd} highlight={[0, 0, 0, 0, 0, waterHighlight, 0]} holes={rects ? [glassHole(rects.hero, cam, width, height)] : []} />
       <AbsoluteFill style={{ ...bandMask(orientation, true, bandTop) }}>
         <Camera cam={cam}>
           <TodayPage
@@ -115,13 +109,15 @@ export function Water({ orientation }: { orientation: Orientation }) {
           {rects && <Cursor x={cursor[0]} y={cursor[1]} press={press} />}
         </Camera>
       </AbsoluteFill>
-      <Caption
+      {/* Ring visible from the cut (continued from scene 2) through beat 20, where the hero grows it. */}
+      <RingCaption
         frame={frame}
+        orientation={orientation}
         text="Graded against goals you choose."
         enter={sceneBeat("water", 12.5)}
         exit={sceneBeat("water", 19.5)}
-        fontSize={st.caption.fontSize}
-        style={{ position: "absolute", left: st.caption.left, right: portrait ? 0 : undefined, top: st.caption.top, textAlign: portrait ? "center" : "left" }}
+        ringEnter={0}
+        highlight={[0, 0, 0, 0, 0, waterHighlight, 0]}
       />
     </Stage>
   );

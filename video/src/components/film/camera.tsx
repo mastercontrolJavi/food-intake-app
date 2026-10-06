@@ -51,11 +51,18 @@ export function frameRect(
   frameW: number,
   frameH: number,
   maxScale = 4,
+  anchor: "center" | "bottom" = "center",
 ): CameraState {
   const s = Math.min(box.w / r.w, box.h / r.h, maxScale);
   const rcx = r.x + r.w / 2;
-  const rcy = r.y + r.h / 2;
   const bcx = box.x + box.w / 2;
+  if (anchor === "bottom") {
+    // Rect's bottom edge sits on the box's bottom edge.
+    const rb = r.y + r.h;
+    const bb = box.y + box.h;
+    return { x: rcx - (bcx - frameW / 2) / s, y: rb - (bb - frameH / 2) / s, s };
+  }
+  const rcy = r.y + r.h / 2;
   const bcy = box.y + box.h / 2;
   return { x: rcx - (bcx - frameW / 2) / s, y: rcy - (bcy - frameH / 2) / s, s };
 }

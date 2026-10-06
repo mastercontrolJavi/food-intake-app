@@ -45,7 +45,7 @@ export function WeightRing({
   baseAlpha?: number;
   highlightColor?: string;
   strokeWidth?: number;
-  labels?: { opacity: number; radius?: number; fontSize: number };
+  labels?: { opacity: number; radius?: number; fontSize: number; highlight?: number[] };
   center?: React.ReactNode;
   style?: React.CSSProperties;
 }) {
@@ -96,12 +96,13 @@ export function WeightRing({
                 fontWeight: 500,
                 fontSize: labels.fontSize,
                 lineHeight: 1,
-                color: "var(--muted-foreground)",
+                color: labels.highlight?.[i] ? `color-mix(in oklab, var(--primary) ${Math.round(labels.highlight[i] * 100)}%, var(--muted-foreground))` : "var(--muted-foreground)",
                 opacity: labels.opacity,
                 fontVariantNumeric: "tabular-nums",
               }}
             >
-              {seg.label} <span style={{ color: "var(--foreground)" }}>{seg.weight}%</span>
+              {seg.label}{" "}
+              <span style={{ color: labels.highlight?.[i] ? `color-mix(in oklab, var(--primary) ${Math.round(labels.highlight[i] * 100)}%, var(--foreground))` : "var(--foreground)" }}>{seg.weight}%</span>
             </div>
           );
         })}

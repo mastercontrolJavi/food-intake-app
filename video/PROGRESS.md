@@ -21,8 +21,13 @@
 - Final animatic `out/preview-animatic.mp4` (1280×720, 30 fps, 900 frames, AAC). Strip at exact 0.5 s: `out/animatic-strip-{1,2}.jpg`.
 - **Gate D** ✅ readability 5 (19/19 pass) · cuts on beat 5 (all 0 f) · pacing 4 · reads muted 4.
 
-## Next (Phase E)
-- Full-res stills (first frame of each scene, hero peak, last frame) both orientations; critic E; renders; ffprobe; remove-one-accessory pass.
+## Phase E (in progress)
+- Done: hard cuts on content; accessory removals (chart draw-on, dial draw-in); ProRes pixel-format fix; tsx dev dep; stills `out/stills/gateE/`.
+- Critic E: studio 3 · smooth 3 · hero 2 · banned 4. Rebuild in progress (see DECISIONS Phase E):
+  1. CaptionRing (small complete ring + caption) replaces watermark in S2/S3/S5; S5 caption "Patterns, only with evidence."
+  2. Hero v3: page fades out; caption ring grows into labelled hero ring (motion blur); per half-beat: segment + label + dialog row light, centre counts up by weighted contribution (fixtures `contributions`); ring pulse (overshoot); result glow; headline beat 25.5; 9:16 whole dialog.
+  3. Feathered (≥160 px) masks; timeline larger type + push; weekly push; end-card wordmark > tagline; 9:16 cursor start.
+- Then: re-render Gate E stills, view, score; final renders (render:16x9, render:9x16, render:master); ffprobe; REPORT.md; PR.
 
 ## Open issues
 - None blocking.

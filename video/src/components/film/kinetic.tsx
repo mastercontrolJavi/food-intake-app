@@ -1,5 +1,7 @@
 import type React from "react";
 import { EASE_IN_OUT, EASE_OUT, tween } from "../../lib/motion";
+import { STAGE, type Orientation } from "../../layout";
+import { WeightRing } from "./ring";
 
 /**
  * Display statements (brief §3): words rise 16px with a fade, staggered 3 frames; lines exit whole.
@@ -99,6 +101,43 @@ export function Caption({
       }}
     >
       {text}
+    </div>
+  );
+}
+
+/**
+ * Caption with the signature ring beside it: a small, complete weight ring (never behind UI) whose
+ * segments light for the metrics the on-screen action touches. The ring may outlive the text
+ * (`ringExit`), so it can hand off to the next scene or grow into the hero ring.
+ */
+export function RingCaption({
+  frame,
+  orientation,
+  text,
+  enter,
+  exit,
+  ringEnter = enter,
+  ringExit,
+  highlight,
+}: {
+  frame: number;
+  orientation: Orientation;
+  text: string;
+  enter: number;
+  exit: number;
+  ringEnter?: number;
+  ringExit?: number;
+  highlight?: number[];
+}) {
+  const c = STAGE[orientation].caption;
+  const ringIn = ringEnter <= 0 ? 1 : tween(frame, ringEnter, ringEnter + 18, 0, 1, EASE_OUT);
+  const ringOut = ringExit == null ? 0 : tween(frame, ringExit - 14, ringExit, 0, 1, EASE_IN_OUT);
+  return (
+    <div style={{ position: "absolute", left: c.left, top: c.cy, transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: c.ring * 0.32 }}>
+      <div style={{ position: "relative", width: c.ring, height: c.ring, opacity: ringIn * (1 - ringOut) }}>
+        <WeightRing size={c.ring} highlight={highlight} baseAlpha={0.42} strokeWidth={3.4} style={{ left: 0, top: 0 }} />
+      </div>
+      <Caption frame={frame} text={text} enter={enter} exit={exit} fontSize={c.fontSize} />
     </div>
   );
 }

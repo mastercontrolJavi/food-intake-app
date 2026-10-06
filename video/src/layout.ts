@@ -12,20 +12,22 @@ export const STAGE = {
     height: 1440,
     hookRing: { cx: 1800, cy: 730, size: 940 },
     hookText: { left: 190, top: 560, fontSize: 112 },
-    watermark: { cx: 2140, cy: 1010, size: 1560 },
-    caption: { left: 190, top: 112, fontSize: 46 },
+    caption: { left: 190, cy: 150, fontSize: 56, ring: 88 },
   },
   portrait: {
     width: 1440,
     height: 2560,
     hookRing: { cx: 720, cy: 1010, size: 940 },
     hookText: { left: 0, top: 1700, fontSize: 118 },
-    watermark: { cx: 1260, cy: 2250, size: 2100 },
-    caption: { left: 0, top: 300, fontSize: 52 },
+    caption: { left: 90, cy: 340, fontSize: 64, ring: 100 },
   },
 } as const;
 
-export const WATERMARK_ALPHA = 0.15;
+/** Screen-space centre of the caption ring (the signature thread in UI scenes; the hero grows it). */
+export function captionRingCentre(o: Orientation) {
+  const c = STAGE[o].caption;
+  return { cx: c.left + c.ring / 2, cy: c.cy, size: c.ring };
+}
 
 /** Screen box UI is framed into while a caption occupies the top band. */
 export const UI_BOX = {
@@ -48,9 +50,9 @@ const EDGES_V = "linear-gradient(to bottom, transparent 0px, black 90px, black c
 export const CAPTION_MASK = {
   landscape: "linear-gradient(to bottom, transparent 0px, transparent 215px, black 300px, black 100%)",
   // 9:16 also keeps the bottom 300 px clear (safe band ends at y = 2260).
-  portrait: "linear-gradient(to bottom, transparent 0px, transparent 500px, black 630px, black 2150px, transparent 2260px)",
+  portrait: "linear-gradient(to bottom, transparent 0px, transparent 440px, black 600px, black 2180px, transparent 2340px)",
 } as const;
-const SAFE_V_PORTRAIT = "linear-gradient(to bottom, transparent 0px, transparent 260px, black 340px, black 2160px, transparent 2260px)";
+const SAFE_V_PORTRAIT = "linear-gradient(to bottom, transparent 0px, transparent 180px, black 340px, black 2180px, transparent 2340px)";
 
 /** Style for a UI layer: soft frame edges (+ caption band when a caption is up; 9:16 clipped to the safe band). */
 export function uiMask(orientation: Orientation, caption: boolean) {
@@ -64,7 +66,7 @@ export function uiMask(orientation: Orientation, caption: boolean) {
  * `bottom` (screen px, from measured element edges), on top of the orientation's caption/safe-band rules.
  * Keeps stray fragments of neighbouring UI from peeking into a framing.
  */
-export function bandMask(orientation: Orientation, caption: boolean, top?: number, bottom?: number, feather = 52) {
+export function bandMask(orientation: Orientation, caption: boolean, top?: number, bottom?: number, feather = orientation === "portrait" ? 160 : 110) {
   const base = uiMask(orientation, caption);
   const t = top ?? -1000;
   const b = bottom ?? 10000;

@@ -1,22 +1,19 @@
 import type React from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { WeeklyLowerPage, type Mark } from "../components/app/pages";
-import { Camera, frameRect, mixCam, pageToScreen, union, type CameraState } from "../components/film/camera";
-import { RingWatermark, Stage } from "../components/film/stage";
-import { bandMask, uiMask, type Orientation } from "../layout";
+import { Camera, frameRect, mixCam, pageToScreen, type CameraState } from "../components/film/camera";
+import { RingCaption } from "../components/film/kinetic";
+import { Stage } from "../components/film/stage";
+import { bandMask, UI_BOX, type Orientation } from "../layout";
 import { usePageRects } from "../lib/measure";
-import { sceneWindow } from "../timing";
+import { EASE_IN_OUT, tween } from "../lib/motion";
+import { sceneBeat, sceneWindow } from "../timing";
 
 /**
- * Scene 5 (beats 32–40): the weekly review's evidence. 16:9 frames the score trend, tracking coverage
- * and the first pattern insight; 9:16 frames the Pattern insights card large so the insight sentence is
- * readable on a phone for its full reading time.
+ * Scene 5 (beats 32–40): the weekly review's evidence. The cut lands on the finished review (score
+ * trend, coverage, first pattern insight) and the camera pushes slowly toward the insight, which is about
+ * water — so the caption ring lights its water segment.
  */
-const BOX = {
-  landscape: { x: 190, y: 110, w: 2180, h: 1240 },
-  portrait: { x: 60, y: 600, w: 1320, h: 1500 },
-} as const;
-
 export function Patterns({ orientation }: { orientation: Orientation }) {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
@@ -24,34 +21,39 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
   const portrait = orientation === "portrait";
   const { rootRef, ref, rects } = usePageRects(["chart", "coverage", "insights", "firstInsight"] as const);
   let cam: CameraState = { x: 700, y: 500, s: 2 };
-  let cam0: CameraState | undefined;
-  let style: React.CSSProperties = { ...uiMask(orientation, false) }; // hard cut on the beat, no fade
+  let style: React.CSSProperties = bandMask(orientation, true);
   if (rects) {
-    const area = portrait
-      ? { x: rects.insights.x, y: rects.insights.y, w: rects.insights.w, h: rects.firstInsight.y + rects.firstInsight.h + 14 - rects.insights.y }
-      : union(rects.chart, rects.coverage, { ...rects.firstInsight, h: rects.firstInsight.h + 8 });
-    const a = frameRect(area, BOX[orientation], width, height);
-    cam0 = a;
-    const b = { ...a, y: a.y + 5, s: a.s * 1.015 };
-    cam = mixCam(a, b, frame / durationInFrames); // slow constant drift
-    if (portrait) {
-      const top = pageToScreen(cam, width, height, 0, rects.insights.y)[1];
-      const bottom = pageToScreen(cam, width, height, 0, rects.firstInsight.y + rects.firstInsight.h + 10)[1];
-      style = { ...style, ...bandMask(orientation, false, top, bottom) };
-    }
+    // 9:16: box bottom raised so the next insight lands in the feathered band below the safe area.
+    const box = portrait ? { ...UI_BOX.portrait, h: 1440 } : UI_BOX[orientation];
+    const insightBottom = rects.firstInsight.y + rects.firstInsight.h + 14;
+    // Open on the week (16:9: the whole trend + coverage row; 9:16: coverage above the card), then push
+    // toward the evidence. Both framings sit on the box's bottom edge, so the next insight stays outside it.
+    const wide = portrait
+      ? { x: rects.insights.x, y: rects.insights.y - 160, w: rects.insights.w, h: insightBottom - (rects.insights.y - 160) }
+      : { x: rects.chart.x, y: rects.chart.y, w: rects.insights.w, h: insightBottom - rects.chart.y };
+    const close = { x: rects.insights.x, y: rects.insights.y, w: rects.insights.w, h: insightBottom - rects.insights.y };
+    const a = frameRect(wide, box, width, height, 4, "bottom");
+    const b = frameRect(close, box, width, height, 4, "bottom");
+    cam = mixCam(a, b, tween(frame, 0, durationInFrames, 0, 1, EASE_IN_OUT));
+    const bottom = pageToScreen(cam, width, height, 0, insightBottom - 4)[1];
+    style = bandMask(orientation, true, undefined, bottom);
   }
-  // Accessory pass: no chart draw-on and no insight build — the cut lands on the finished review, and the
-  // insight sentence gets the whole scene to be read. Only the slow camera drift moves.
-  const chartReveal = 1;
-  const insight0 = 1;
+  const water = tween(frame, 26, 40);
   return (
     <Stage>
-      <RingWatermark orientation={orientation} cam={cam0 ? cam : undefined} cam0={cam0} />
       <AbsoluteFill style={style}>
         <Camera cam={cam}>
-          <WeeklyLowerPage orientation={orientation} rootRef={rootRef} mark={ref as Mark} chartReveal={chartReveal} insightReveal={[insight0, 1, 1]} />
+          <WeeklyLowerPage orientation={orientation} rootRef={rootRef} mark={ref as Mark} chartReveal={1} insightReveal={[1, 1, 1]} />
         </Camera>
       </AbsoluteFill>
+      <RingCaption
+        frame={frame}
+        orientation={orientation}
+        text="Patterns, only with evidence."
+        enter={sceneBeat("patterns", 32.25)}
+        exit={durationInFrames + 20}
+        highlight={[0, 0, 0, 0, 0, water, 0]}
+      />
     </Stage>
   );
 }
