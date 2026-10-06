@@ -23,10 +23,11 @@
 
 ## Phase E (in progress)
 - Done: hard cuts on content; accessories removed (chart draw-on, dial draw-in, flying segment copies, blurred dashboard behind the dialog, watermark arcs); ProRes pixel-format fix; tsx dev dep.
-- Critic E pass 1: studio 3 · smooth 3 · hero 2 · banned 4 → hero v3 (count-up by weighted contribution, ring+label+row lit together, ring settle = single overshoot), caption-ring thread, feathered masks, 9:16 whole dialog, bigger wordmark, bottom-anchored patterns framing.
-- Gate E stills (final): `out/stills/gateE/`, sheets `out/stills/contact-*-gateE.jpg`. Self: studio 4 · smooth 4 · hero 4–5 · banned 5.
-- Running now: critic E pass 2; final renders (`out/render-*.log`): 16x9 mp4 → 9x16 mp4 → ProRes master.
-- Then: ffprobe verification, REPORT.md, commit, draft PR.
+- Critic E pass 1: 3 · 3 · 2 · 4 → hero v3 (count-up), caption-ring thread, feathered masks.
+- Critic E pass 2: 3 · 3 · 3 · 4 → hero: score ring → weight ring shared element, segments draw on, footer held until count lands, rows lit through peak; bigger caption ring from frame 1; gap-aligned fades; 9:16 hero ring 520, timeline last-four-rows.
+- Final Gate E stills `out/stills/gateE/*.jpg` (PNGs git-ignored). Self: studio 4 · hero 4 · banned 5 (smooth + specs verified on renders).
+- RUNNING: final renders (`out/render-{16x9,9x16,master}.log`).
+- Next: ffprobe → critic E pass 3 on frames from the final MP4 (independent final score) → REPORT.md placeholders → commit MP4s (if < 100 MB) → draft PR.
 
 ## Open issues
 - None blocking.
