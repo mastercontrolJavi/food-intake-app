@@ -26,10 +26,10 @@ import { glassHole, heroCardCamera, TODAY_KEYS, type TodayRects } from "./Water"
  */
 const RING_MOVE = 44;
 const FIRE0 = 52;
-const FIRE_STEP = 10;
+const FIRE_STEP = 14;
 const FLIGHT = 30;
-const RESULT = sceneBeat("hero", 24);
-const HEADLINE = sceneBeat("hero", 24.5);
+const RESULT = sceneBeat("hero", 25);
+const HEADLINE = sceneBeat("hero", 25.5);
 
 const HERO_RING = {
   landscape: { cx: 660, cy: 940, size: 620 },
@@ -60,7 +60,7 @@ export function Hero({ orientation }: { orientation: Orientation }) {
     const d = dlg.rects.dialog;
     const area = portrait ? { x: d.x, y: weights[0].y - 44, w: d.w, h: d.y + d.h - (weights[0].y - 44) } : d;
     const to = frameRect(area, DIALOG_BOX[orientation], width, height);
-    const settle = { ...to, s: to.s * 1.01, y: to.y - 2 };
+    const settle = { ...to, s: to.s * 1.03, y: to.y - 4 }; // slow push through the hold
     cam = mixCam(mixCam(from, to, tween(frame, 0, 56, 0, 1, EASE_IN_OUT)), settle, tween(frame, 56, durationInFrames, 0, 1, (t) => t));
   }
 

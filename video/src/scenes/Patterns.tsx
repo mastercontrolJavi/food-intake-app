@@ -25,12 +25,14 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
   const portrait = orientation === "portrait";
   const { rootRef, ref, rects } = usePageRects(["chart", "coverage", "insights", "firstInsight"] as const);
   let cam: CameraState = { x: 700, y: 500, s: 2 };
+  let cam0: CameraState | undefined;
   let style: React.CSSProperties = { opacity: tween(frame, 0, 10, 0, 1, EASE_OUT), ...uiMask(orientation, false) };
   if (rects) {
     const area = portrait
       ? { x: rects.insights.x, y: rects.insights.y, w: rects.insights.w, h: rects.firstInsight.y + rects.firstInsight.h + 14 - rects.insights.y }
       : union(rects.chart, rects.coverage, { ...rects.firstInsight, h: rects.firstInsight.h + 8 });
     const a = frameRect(area, BOX[orientation], width, height);
+    cam0 = a;
     const b = { ...a, y: a.y + 5, s: a.s * 1.015 };
     cam = mixCam(a, b, frame / durationInFrames); // slow constant drift
     if (portrait) {
@@ -43,7 +45,7 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
   const insight0 = tween(frame, sceneBeat("patterns", 32.5) - 6, sceneBeat("patterns", 32.5) + 14, 0, 1, EASE_OUT);
   return (
     <Stage>
-      <RingWatermark orientation={orientation} />
+      <RingWatermark orientation={orientation} cam={cam0 ? cam : undefined} cam0={cam0} />
       <AbsoluteFill style={style}>
         <Camera cam={cam}>
           <WeeklyLowerPage orientation={orientation} rootRef={rootRef} mark={ref as Mark} chartReveal={chartReveal} insightReveal={[insight0, 1, 1]} />

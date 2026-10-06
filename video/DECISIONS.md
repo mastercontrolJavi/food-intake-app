@@ -49,3 +49,11 @@ One line each: **decision** — reason — *alternative rejected*.
 - **Critic C minor accepted:** fifth Recent meal made distinct; Reusable foods filled with sample chips; timeline framed at full card width; cursor moved off the "+500" label; end card drops the duplicate utensils tile (wordmark only); captions restyled in the app's eyebrow style (primary, medium) so they read as film type, not page titles; watermark alpha 0.20 → 0.15 and the 9:16 watermark enlarged into an ambient arc.
 - **Band masks**: each UI layer fades out exactly at the measured top/bottom edge of its framing (`bandMask`), so neighbouring UI never peeks in as fragments — *static masks*.
 - **Lint**: the app's root `eslint` also sweeps /video; fixed all 21 findings (React Compiler ref heuristics → `mark(key)` callbacks; capture scripts → ESM). Root `tsc` passes with and without video/node_modules.
+
+## Phase D
+- **S2/S3 cut moved from beat 11 to beat 12** — the new timeline row needed ≥ 2.8 s (its 8-word detail line) and S3 had a ~3 s static hold on the score card; total length unchanged — *changing scene lengths via BPM*.
+- **Log again tapped on the half-beat 6.5, internal cut on beat 7** — gives the timeline 3.0 s; the tap SFX sits on an eighth note (cuts stay on whole beats) — *cut on beat 8 (row legible 2.3 s, fails §2.6)*.
+- **+500 tapped on beat 14; camera holds 1.5 s on the water bar before gliding to the score card** — "2,250 ml of 2,800 ml" must be legible 1.9 s — *pan straight after the tap (1.45 s)*.
+- **Hero cadence: segments fire every 14 f (was 10); result glows on beat 25, headline 25.5; slow 3 % push during the hold** — the 1.2 s burst felt rushed and the 4.5 s hold after it went static — *original cadence*.
+- **Readability and cut tables generated from code (`scripts/timing-report.ts` → TIMING.md)** — the evidence can't drift from the film — *hand-written tables*.
+- **Animatic rendered at 1280×720 (scale 0.5), every 2nd frame (30 fps)** — the brief asks for a 30 fps preview; half scale keeps it to ~8 min on 4 cores — *full 2K preview*.

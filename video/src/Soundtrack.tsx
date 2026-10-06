@@ -10,8 +10,8 @@ import { beat, DURATION_IN_FRAMES, FPS } from "./timing";
 const FADE_START = DURATION_IN_FRAMES - Math.round(1.5 * FPS);
 
 const CLICKS = [
-  { at: beat(7), volume: 0.07 }, // Log again
-  { at: beat(13), volume: 0.12 }, // +500
+  { at: beat(6.5), volume: 0.07 }, // Log again (half-beat)
+  { at: beat(14), volume: 0.12 }, // +500
   { at: beat(20), volume: 0.5 }, // Why this score? (hero hit)
 ];
 

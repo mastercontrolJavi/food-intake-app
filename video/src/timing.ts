@@ -17,8 +17,8 @@ export const beats = (n: number) => Math.round(n * FRAMES_PER_BEAT);
 /** Scene boundaries (in beats). Cuts happen exactly on these. */
 export const SCENES = {
   hook: { from: 0, to: 5 },
-  log: { from: 5, to: 11 },
-  water: { from: 11, to: 20 },
+  log: { from: 5, to: 12 },
+  water: { from: 12, to: 20 },
   hero: { from: 20, to: 32 },
   patterns: { from: 32, to: 40 },
   resolve: { from: 40, to: 50 },

@@ -11,8 +11,9 @@ import { usePageRects } from "../lib/measure";
 import { EASE_IN_OUT, EASE_OUT, tween } from "../lib/motion";
 import { sceneBeat, sceneWindow } from "../timing";
 
-const CLICK = sceneBeat("log", 7);
-const CUT = sceneBeat("log", 8);
+// Tap on the half-beat, cut on beat 7: the new timeline row then holds 3 s (its detail line needs 2.8 s).
+const CLICK = sceneBeat("log", 6.5);
+const CUT = sceneBeat("log", 7);
 
 /** The five nutrition segments (calories, protein, fiber, carbs, fat) light up when a meal is logged. */
 export function mealHighlight(frame: number, click: number) {
@@ -41,7 +42,7 @@ export function LogAgain({ orientation }: { orientation: Orientation }) {
         frame={frame}
         text="Log again in one tap."
         enter={sceneBeat("log", 5.5)}
-        exit={Math.min(durationInFrames, sceneBeat("log", 10.5))}
+        exit={Math.min(durationInFrames, sceneBeat("log", 11.5))}
         fontSize={st.caption.fontSize}
         style={{ position: "absolute", left: st.caption.left, right: portrait ? 0 : undefined, top: st.caption.top, textAlign: portrait ? "center" : "left" }}
       />
@@ -95,9 +96,9 @@ function TimelinePart({ orientation }: { orientation: Orientation }) {
       : { x: rects.timeline.x, y: row.y - 250, w: rects.timeline.w, h: row.h + 270 };
     const a = frameRect(area, box, width, height);
     const b = { ...a, x: a.x + 5, s: a.s * 1.015 };
-    cam = mixCam(a, b, frame / 108);
+    cam = mixCam(a, b, frame / 180);
   }
-  const reveal = tween(frame, 4, 26, 0, 1, EASE_OUT);
+  const reveal = tween(frame, 2, 18, 0, 1, EASE_OUT);
   return (
     <AbsoluteFill style={{ ...uiMask(orientation, true) }}>
       <Camera cam={cam}>

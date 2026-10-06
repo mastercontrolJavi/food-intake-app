@@ -1,6 +1,6 @@
 # CONCEPT — "Every point, explained."
 
-*Revision 2: rewritten after the Gate B independent critic. Changes are logged in DECISIONS.md.*
+*Revision 2: rewritten after the Gate B independent critic. As-built timing changes from Phases C–D (hero choreography, beats 6.5/7/12/14/25) are logged in DECISIONS.md; TIMING.md holds the final schedule.*
 
 ## The idea
 **Title:** Every point, explained.

@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** D — Animatic (next)
+**Current phase:** D — Animatic (gate review in progress)
 
 ## Done
 - **Phase A — Audit** ✅ Gate A: purpose 5 · tokens 5 · screens 4 · aha 5.
@@ -14,9 +14,14 @@
   - Audio: generated 100 BPM bed + click (`scripts/make-audio.py`), clicks 13.9–14.7 dB under music; Soundtrack.tsx wired.
   - App safety: root `tsc` passes with/without video deps; root `eslint video` clean.
 
-## Next (Phase D)
-1. Render 30 fps 16:9 preview → `out/preview-animatic.mp4`.
-2. Frame strip every 0.5 s; readability table; cut-vs-beat table → Gate D.
+## Phase D (in progress)
+- Animatic v1 rendered and strip reviewed → pacing fixes (S2/S3 cut → beat 12, Log-again tap 6.5 / cut 7, +500 on beat 14 with 1.5 s hold, hero cadence 14 f).
+- TIMING.md (generated): all 19 text lines pass readability; all cuts 0 frames from the beat.
+- Watermark parallax wired (Water referenced to closing camera; Patterns to opening camera).
+- Final animatic render running → strip at exact 0.5 s frames → Gate D scores.
+
+## Next (Phase E)
+- Full-res stills (first frame of each scene, hero peak, last frame) both orientations; critic E; renders; ffprobe; remove-one-accessory pass.
 
 ## Open issues
 - None blocking.
