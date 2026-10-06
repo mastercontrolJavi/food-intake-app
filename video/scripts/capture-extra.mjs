@@ -1,6 +1,6 @@
 // Extra audit captures: fully graded prior periods (current week/month are partial).
-const { chromium } = require("playwright");
-const path = require("path");
+import { chromium } from "playwright";
+import path from "node:path";
 const base = process.argv[2] || "http://localhost:3000";
 const out = process.argv[3] || "video/audit/screens";
 const routes = [

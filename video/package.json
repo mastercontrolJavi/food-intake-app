@@ -22,11 +22,15 @@
     "@remotion/paths": "4.0.533",
     "@remotion/tailwind-v4": "4.0.533",
     "@remotion/transitions": "4.0.533",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
     "geist": "1.7.2",
     "lucide-react": "1.34.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "recharts": "3.10.1",
     "remotion": "4.0.533",
+    "tailwind-merge": "3.6.0",
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {

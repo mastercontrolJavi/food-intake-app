@@ -1,8 +1,8 @@
 // Audit capture: screenshots the running Intake app (public /demo routes + login).
 // Run from the app root so playwright resolves from the app's node_modules:
-//   node video/scripts/capture-app.cjs http://localhost:3000 video/audit/screens
-const { chromium } = require("playwright");
-const path = require("path");
+//   node video/scripts/capture-app.mjs http://localhost:3000 video/audit/screens
+import { chromium } from "playwright";
+import path from "node:path";
 
 const base = process.argv[2] || "http://localhost:3000";
 const out = process.argv[3] || "video/audit/screens";

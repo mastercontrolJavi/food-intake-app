@@ -104,7 +104,7 @@ read-only `/demo/*` routes render fully with the deterministic fictional 70-day 
 Authenticated-only screens (meal form, quick actions, finish day) could not be clicked through —
 **rebuilt from code** (`meal-form.tsx`, `dashboard-view.tsx` non-demo branch) in the film.
 
-Capture scripts: `video/scripts/capture-app.cjs`, `video/scripts/capture-extra.cjs`.
+Capture scripts: `video/scripts/capture-app.mjs`, `video/scripts/capture-extra.mjs`.
 
 ### Screenshots (`video/audit/screens/`, desktop 1440×900 @2x, mobile 390×844 @3x, light + dark; stored as q90 4:4:4 JPEG to keep the repo light)
 
