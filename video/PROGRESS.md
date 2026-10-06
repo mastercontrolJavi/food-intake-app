@@ -22,12 +22,11 @@
 - **Gate D** ✅ readability 5 (19/19 pass) · cuts on beat 5 (all 0 f) · pacing 4 · reads muted 4.
 
 ## Phase E (in progress)
-- Done: hard cuts on content; accessory removals (chart draw-on, dial draw-in); ProRes pixel-format fix; tsx dev dep; stills `out/stills/gateE/`.
-- Critic E: studio 3 · smooth 3 · hero 2 · banned 4. Rebuild in progress (see DECISIONS Phase E):
-  1. CaptionRing (small complete ring + caption) replaces watermark in S2/S3/S5; S5 caption "Patterns, only with evidence."
-  2. Hero v3: page fades out; caption ring grows into labelled hero ring (motion blur); per half-beat: segment + label + dialog row light, centre counts up by weighted contribution (fixtures `contributions`); ring pulse (overshoot); result glow; headline beat 25.5; 9:16 whole dialog.
-  3. Feathered (≥160 px) masks; timeline larger type + push; weekly push; end-card wordmark > tagline; 9:16 cursor start.
-- Then: re-render Gate E stills, view, score; final renders (render:16x9, render:9x16, render:master); ffprobe; REPORT.md; PR.
+- Done: hard cuts on content; accessories removed (chart draw-on, dial draw-in, flying segment copies, blurred dashboard behind the dialog, watermark arcs); ProRes pixel-format fix; tsx dev dep.
+- Critic E pass 1: studio 3 · smooth 3 · hero 2 · banned 4 → hero v3 (count-up by weighted contribution, ring+label+row lit together, ring settle = single overshoot), caption-ring thread, feathered masks, 9:16 whole dialog, bigger wordmark, bottom-anchored patterns framing.
+- Gate E stills (final): `out/stills/gateE/`, sheets `out/stills/contact-*-gateE.jpg`. Self: studio 4 · smooth 4 · hero 4–5 · banned 5.
+- Running now: critic E pass 2; final renders (`out/render-*.log`): 16x9 mp4 → 9x16 mp4 → ProRes master.
+- Then: ffprobe verification, REPORT.md, commit, draft PR.
 
 ## Open issues
 - None blocking.
