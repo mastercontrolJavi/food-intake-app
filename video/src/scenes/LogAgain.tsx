@@ -42,6 +42,7 @@ export function LogAgain({ orientation }: { orientation: Orientation }) {
         text="Log again in one tap."
         enter={sceneBeat("log", 5.5)}
         exit={Math.min(durationInFrames, sceneBeat("log", 11.5))}
+        ringEnter={0}
         highlight={highlight}
       />
     </Stage>
@@ -67,9 +68,13 @@ function LogPart({ orientation }: { orientation: Orientation }) {
   }
   const press = pressAt(frame, CLICK);
   const enter = 1; // hard cut on the beat: land on content, no fade
-  // The page header sits right above the cards; fade it out just above the card's top edge.
-  const top = rects ? pageToScreen(cam, width, height, rects.recent.x, rects.recent.y)[1] : undefined;
-  const style: React.CSSProperties = { opacity: enter, ...bandMask(orientation, true, top) };
+  // Show exactly the framed cards: fades sit in the gaps above (24 css px) and below (16 css px) them.
+  let style: React.CSSProperties = { opacity: enter, ...bandMask(orientation, true) };
+  if (rects) {
+    const top = pageToScreen(cam, width, height, 0, rects.recent.y)[1];
+    const bottom = pageToScreen(cam, width, height, 0, rects.recent.y + rects.recent.h)[1];
+    style = { opacity: enter, ...bandMask(orientation, true, top, bottom, [20 * cam.s, 13 * cam.s]) };
+  }
   return (
     <AbsoluteFill style={style}>
       <Camera cam={cam}>
@@ -86,19 +91,30 @@ function TimelinePart({ orientation }: { orientation: Orientation }) {
   const { rootRef, ref, rects } = usePageRects(["timeline", "newRow"] as const);
   const box = UI_BOX[orientation];
   let cam: CameraState = { x: 720, y: 1200, s: 2 };
+  let style: React.CSSProperties = uiMask(orientation, true);
   if (rects) {
     const row = rects.newRow;
-    // Frame the last rows of the timeline, weighted to the new row's title and meal score.
+    // The last four rows, cut cleanly at a row divider (16:9: card running off the right edge;
+    // 9:16: full card width, down to the card's bottom edge).
+    const firstRowTop = row.y - 3 * row.h;
+    const cardBottom = rects.timeline.y + rects.timeline.h;
     const area = orientation === "landscape"
-      ? { x: rects.timeline.x, y: row.y - 170, w: 780, h: row.h + 180 }
-      : { x: rects.timeline.x, y: row.y - 250, w: rects.timeline.w, h: row.h + 270 };
+      ? { x: rects.timeline.x, y: firstRowTop, w: 780, h: row.y + row.h + 16 - firstRowTop }
+      : { x: rects.timeline.x, y: firstRowTop, w: rects.timeline.w, h: cardBottom - firstRowTop };
     const a = frameRect(area, box, width, height);
     const b = { ...a, x: a.x + 6, s: a.s * 1.04 };
     cam = mixCam(a, b, frame / 180); // slow push through the hold
+    if (orientation === "landscape") {
+      style = bandMask(orientation, true, pageToScreen(cam, width, height, 0, firstRowTop)[1], undefined, 6);
+    } else {
+      const top = pageToScreen(cam, width, height, 0, firstRowTop)[1];
+      const bottom = pageToScreen(cam, width, height, 0, cardBottom)[1];
+      style = bandMask(orientation, true, top, bottom, [6, 20 * cam.s]);
+    }
   }
   const reveal = tween(frame, 2, 18, 0, 1, EASE_OUT);
   return (
-    <AbsoluteFill style={{ ...uiMask(orientation, true) }}>
+    <AbsoluteFill style={style}>
       <Camera cam={cam}>
         <TodayPage
           orientation={orientation}

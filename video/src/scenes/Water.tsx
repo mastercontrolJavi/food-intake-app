@@ -40,7 +40,7 @@ export function Water({ orientation }: { orientation: Orientation }) {
 
   let cam: CameraState = { x: 720, y: 600, s: 2 };
   let cursor: [number, number] = [0, 0];
-  let bandTop: number | undefined;
+  let band: { top: number; bottom: number; ft: number; fb: number } | undefined;
   if (rects) {
     const box = UI_BOX[orientation];
     // Whole cards only: Daily targets + Quick actions (desktop); Water row → Quick actions (mobile stack).
@@ -57,11 +57,15 @@ export function Water({ orientation }: { orientation: Orientation }) {
     const drift = mixCam(a0, a1, tween(frame, 0, PAN_START, 0, 1, (t) => t));
     const panT = tween(frame, PAN_START, PAN_END, 0, 1, EASE_IN_OUT);
     cam = mixCam(drift, b, panT);
-    if (orientation === "portrait") {
-      const topA = pageToScreen(cam, width, height, 0, rects.water.y - 20)[1];
-      const topB = pageToScreen(cam, width, height, 0, rects.hero.y)[1];
-      bandTop = topA + (topB - topA) * panT;
-    }
+    // Show exactly the framed components; fades sit in the gaps around them and follow the pan.
+    const y = (py: number) => pageToScreen(cam, width, height, 0, py)[1];
+    const landscape = orientation === "landscape";
+    const aTop = landscape ? y(rects.targets.y) : y(rects.water.y);
+    const aBottom = y(landscape ? Math.max(rects.targets.y + rects.targets.h, rects.quick.y + rects.quick.h) : rects.quick.y + rects.quick.h);
+    const bTop = landscape ? y(rects.hero.y - 84) : y(rects.hero.y);
+    const bBottom = y(rects.hero.y + rects.hero.h);
+    const mix = (p: number, q: number) => p + (q - p) * panT;
+    band = { top: mix(aTop, bTop), bottom: mix(aBottom, bBottom), ft: (landscape ? 20 : 26) * cam.s, fb: 20 * cam.s };
     const p = rects.plus500;
     const w = rects.why;
     cursor = cursorPosition(frame, [
@@ -81,7 +85,7 @@ export function Water({ orientation }: { orientation: Orientation }) {
 
   return (
     <Stage>
-      <AbsoluteFill style={{ ...bandMask(orientation, true, bandTop) }}>
+      <AbsoluteFill style={band ? bandMask(orientation, true, band.top, band.bottom, [band.ft, band.fb]) : bandMask(orientation, true)}>
         <Camera cam={cam}>
           <TodayPage
             orientation={orientation}
@@ -109,7 +113,7 @@ export function Water({ orientation }: { orientation: Orientation }) {
           {rects && <Cursor x={cursor[0]} y={cursor[1]} press={press} />}
         </Camera>
       </AbsoluteFill>
-      {/* Ring visible from the cut (continued from scene 2) through beat 20, where the hero grows it. */}
+      {/* Ring visible from the cut (continued from scene 2); the hero grows its ring out of the score card. */}
       <RingCaption
         frame={frame}
         orientation={orientation}
@@ -117,6 +121,7 @@ export function Water({ orientation }: { orientation: Orientation }) {
         enter={sceneBeat("water", 12.5)}
         exit={sceneBeat("water", 19.5)}
         ringEnter={0}
+        ringExit={sceneBeat("water", 19.5)}
         highlight={[0, 0, 0, 0, 0, waterHighlight, 0]}
       />
     </Stage>

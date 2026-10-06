@@ -25,7 +25,7 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
   if (rects) {
     // 9:16: box bottom raised so the next insight lands in the feathered band below the safe area.
     const box = portrait ? { ...UI_BOX.portrait, h: 1440 } : UI_BOX[orientation];
-    const insightBottom = rects.firstInsight.y + rects.firstInsight.h + 14;
+    const insightBottom = rects.firstInsight.y + rects.firstInsight.h + 10;
     // Open on the week (16:9: the whole trend + coverage row; 9:16: coverage above the card), then push
     // toward the evidence. Both framings sit on the box's bottom edge, so the next insight stays outside it.
     const wide = portrait
@@ -35,10 +35,13 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
     const a = frameRect(wide, box, width, height, 4, "bottom");
     const b = frameRect(close, box, width, height, 4, "bottom");
     cam = mixCam(a, b, tween(frame, 0, durationInFrames, 0, 1, EASE_IN_OUT));
-    const bottom = pageToScreen(cam, width, height, 0, insightBottom - 4)[1];
-    style = bandMask(orientation, true, undefined, bottom);
+    // Fades in the gaps: above the framed block (24 css px) and below the first insight (12 css px).
+    const y = (py: number) => pageToScreen(cam, width, height, 0, py)[1];
+    const top = portrait ? y(rects.insights.y) : y(rects.chart.y);
+    const bottom = y(rects.firstInsight.y + rects.firstInsight.h);
+    style = bandMask(orientation, true, top, bottom, [20 * cam.s, 10 * cam.s]);
   }
-  const water = tween(frame, 26, 40);
+  const water = tween(frame, 8, 22);
   return (
     <Stage>
       <AbsoluteFill style={style}>
@@ -52,6 +55,7 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
         text="Patterns, only with evidence."
         enter={sceneBeat("patterns", 32.25)}
         exit={durationInFrames + 20}
+        ringEnter={0}
         highlight={[0, 0, 0, 0, 0, water, 0]}
       />
     </Stage>

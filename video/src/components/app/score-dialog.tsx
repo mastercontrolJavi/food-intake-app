@@ -16,6 +16,7 @@ export function ScoreDialog({
   weightTint,
   rowLight,
   resultTint = 0,
+  resultValueOpacity = 1,
   weightRefs,
   style,
   className,
@@ -30,6 +31,8 @@ export function ScoreDialog({
   /** 0..1 per row: momentary row highlight as its ring segment lights (film-only emphasis, no layout change). */
   rowLight?: number[];
   resultTint?: number;
+  /** Film-only: hold the footer value back until the hero's count-up lands on it. */
+  resultValueOpacity?: number;
   weightRefs?: React.MutableRefObject<(HTMLDivElement | null)[]>;
   style?: React.CSSProperties;
   className?: string;
@@ -91,7 +94,7 @@ export function ScoreDialog({
         <span className="font-medium">Normalized result</span>
         <strong
           className="number-tabular text-xl"
-          style={resultTint ? { color: `color-mix(in oklab, var(--primary) ${Math.round(resultTint * 100)}%, var(--popover-foreground))` } : undefined}
+          style={{ opacity: resultValueOpacity, ...(resultTint ? { color: `color-mix(in oklab, var(--primary) ${Math.round(resultTint * 100)}%, var(--popover-foreground))` } : {}) }}
         >{`${score} / 100`}</strong>
       </div>
       <Button variant="ghost" className="absolute top-2 right-2" size="icon-sm">

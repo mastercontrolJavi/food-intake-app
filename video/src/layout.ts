@@ -12,14 +12,14 @@ export const STAGE = {
     height: 1440,
     hookRing: { cx: 1800, cy: 730, size: 940 },
     hookText: { left: 190, top: 560, fontSize: 112 },
-    caption: { left: 190, cy: 150, fontSize: 56, ring: 88 },
+    caption: { left: 190, cy: 168, fontSize: 58, ring: 150 },
   },
   portrait: {
     width: 1440,
     height: 2560,
-    hookRing: { cx: 720, cy: 1010, size: 940 },
+    hookRing: { cx: 720, cy: 1010, size: 760 },
     hookText: { left: 0, top: 1700, fontSize: 118 },
-    caption: { left: 90, cy: 340, fontSize: 64, ring: 100 },
+    caption: { left: 90, cy: 385, fontSize: 64, ring: 170 },
   },
 } as const;
 
@@ -31,8 +31,8 @@ export function captionRingCentre(o: Orientation) {
 
 /** Screen box UI is framed into while a caption occupies the top band. */
 export const UI_BOX = {
-  landscape: { x: 190, y: 250, w: 2180, h: 1100 },
-  portrait: { x: 60, y: 640, w: 1320, h: 1520 },
+  landscape: { x: 190, y: 290, w: 2180, h: 1060 },
+  portrait: { x: 60, y: 560, w: 1320, h: 1620 },
 } as const;
 /** Screen box for UI when no caption is showing. */
 export const UI_BOX_FULL = {
@@ -48,11 +48,11 @@ const EDGES = "linear-gradient(to right, transparent 0px, black 120px, black cal
 const EDGES_V = "linear-gradient(to bottom, transparent 0px, black 90px, black calc(100% - 90px), transparent 100%)";
 
 export const CAPTION_MASK = {
-  landscape: "linear-gradient(to bottom, transparent 0px, transparent 215px, black 300px, black 100%)",
+  landscape: "linear-gradient(to bottom, transparent 0px, transparent 250px, black 285px, black 100%)",
   // 9:16 also keeps the bottom 300 px clear (safe band ends at y = 2260).
-  portrait: "linear-gradient(to bottom, transparent 0px, transparent 440px, black 600px, black 2180px, transparent 2340px)",
+  portrait: "linear-gradient(to bottom, transparent 0px, transparent 480px, black 540px, black 2250px, transparent 2290px)",
 } as const;
-const SAFE_V_PORTRAIT = "linear-gradient(to bottom, transparent 0px, transparent 180px, black 340px, black 2180px, transparent 2340px)";
+const SAFE_V_PORTRAIT = "linear-gradient(to bottom, transparent 0px, transparent 230px, black 270px, black 2250px, transparent 2290px)";
 
 /** Style for a UI layer: soft frame edges (+ caption band when a caption is up; 9:16 clipped to the safe band). */
 export function uiMask(orientation: Orientation, caption: boolean) {
@@ -66,10 +66,18 @@ export function uiMask(orientation: Orientation, caption: boolean) {
  * `bottom` (screen px, from measured element edges), on top of the orientation's caption/safe-band rules.
  * Keeps stray fragments of neighbouring UI from peeking into a framing.
  */
-export function bandMask(orientation: Orientation, caption: boolean, top?: number, bottom?: number, feather = orientation === "portrait" ? 160 : 110) {
+export function bandMask(
+  orientation: Orientation,
+  caption: boolean,
+  top?: number,
+  bottom?: number,
+  feather: number | [number, number] = orientation === "portrait" ? 160 : 110,
+) {
   const base = uiMask(orientation, caption);
   const t = top ?? -1000;
   const b = bottom ?? 10000;
-  const band = `linear-gradient(to bottom, transparent 0px, transparent ${Math.max(0, t - 4 - feather)}px, black ${Math.max(1, t - 4)}px, black ${b + 4}px, transparent ${b + 4 + feather}px)`;
+  // Feathers are meant to sit inside the gap between components (fade never crosses text).
+  const [ft, fb] = Array.isArray(feather) ? feather : [feather, feather];
+  const band = `linear-gradient(to bottom, transparent 0px, transparent ${Math.max(0, t - ft)}px, black ${Math.max(1, t)}px, black ${b}px, transparent ${b + fb}px)`;
   return { ...base, maskImage: `${band}, ${base.maskImage}`, WebkitMaskImage: `${band}, ${base.WebkitMaskImage}` };
 }

@@ -135,7 +135,7 @@ export function RingCaption({
   return (
     <div style={{ position: "absolute", left: c.left, top: c.cy, transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: c.ring * 0.32 }}>
       <div style={{ position: "relative", width: c.ring, height: c.ring, opacity: ringIn * (1 - ringOut) }}>
-        <WeightRing size={c.ring} highlight={highlight} baseAlpha={0.42} strokeWidth={3.4} style={{ left: 0, top: 0 }} />
+        <WeightRing size={c.ring} highlight={highlight} baseAlpha={0.42} strokeWidth={9} style={{ left: 0, top: 0 }} />
       </div>
       <Caption frame={frame} text={text} enter={enter} exit={exit} fontSize={c.fontSize} />
     </div>

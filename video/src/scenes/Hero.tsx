@@ -4,7 +4,7 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { CameraMotionBlur } from "@remotion/motion-blur";
 import { TodayPage, type Mark } from "../components/app/pages";
 import { ScoreDialog } from "../components/app/score-dialog";
-import { Camera, frameRect, mixCam, type CameraState } from "../components/film/camera";
+import { Camera, frameRect, mixCam, pageToScreen, type CameraState } from "../components/film/camera";
 import { Cursor, pressAt } from "../components/film/cursor";
 import { KineticText } from "../components/film/kinetic";
 import { SEGMENTS, WeightRing } from "../components/film/ring";
@@ -18,12 +18,12 @@ import { heroCardCamera, TODAY_KEYS, type TodayRects } from "./Water";
 
 /**
  * Scene 4 (beats 20–32) — the film's one orchestrated moment.
- *  Beat 20     "Why this score?" opens the real breakdown dialog; the dashboard falls away, and the small
- *              caption ring grows into a large, labelled weight ring beside the dialog (motion-blurred move).
- *  Beats 21.7–24.7, every half-beat: one segment, its label and its dialog row light together, and the
+ *  Beat 20     "Why this score?" opens the real breakdown dialog; the dashboard falls away and its score
+ *              ring becomes the weight ring, which grows beside the dialog (the one motion-blurred move).
+ *  Beats 21.7–24.7, every half-beat: one segment draws on along its arc, its label and dialog row light, and the
  *              ring's centre adds that metric's weighted contribution (score × weight ÷ available weight —
  *              the engine's formula) — 0 → 30 → 50 → 58 → 63 → 69 → 82 → 95.
- *  Beat 25     The sum completes: the ring settles with the film's single overshoot; "95 / 100" glows.
+ *  Beat 25     The sum completes: the ring settles with the film's single overshoot; "95 / 100" lands.
  *  Beat 25.5   "Every point, explained."
  */
 const TRAVEL = 44;
@@ -35,13 +35,13 @@ const HEADLINE = sceneBeat("hero", 25.5);
 
 const HERO_RING = {
   landscape: { cx: 700, cy: 900, size: 600, labelSize: 32 },
-  portrait: { cx: 720, cy: 470, size: 380, labelSize: 0 }, // 9:16: no labels — too small to hold seven
+  portrait: { cx: 720, cy: 560, size: 520, labelSize: 0 }, // 9:16: unlabelled — no room for seven labels
 } as const;
 /** 9:16: after the sum completes, labels give way and the ring steps left for the headline. */
-const PORTRAIT_RING_END = { cx: 300, cy: 470 };
+const PORTRAIT_RING_END = { cx: 330, cy: 560 };
 const DIALOG_BOX = {
   landscape: { x: 1330, y: 96, w: 1080, h: 1248 },
-  portrait: { x: 60, y: 720, w: 1320, h: 1440 },
+  portrait: { x: 60, y: 900, w: 1320, h: 1300 },
 } as const;
 const VIEWPORT_HEIGHT = { landscape: 900, portrait: 844 } as const;
 
@@ -65,20 +65,30 @@ export function Hero({ orientation }: { orientation: Orientation }) {
 
   // The dashboard falls away as the dialog opens (no duplicate score behind the breakdown).
   const open = uiSpring(frame, fps, 0, 14);
-  const pageOut = tween(frame, 0, 26, 0, 1, EASE_IN_OUT);
+  const pageOut = tween(frame, 0, 18, 0, 1, EASE_IN_OUT);
   const press = pressAt(frame, 0);
 
   // Lighting + count-up.
   const lit = LIGHT.map((l) => tween(frame, l - 2, l + 6, 0, 1, EASE_OUT));
-  const settle = 1 - tween(frame, COMPLETE + 10, COMPLETE + 44, 0, 1, EASE_IN_OUT);
+  // Rows, labels and the footer stay lit through the peak (easing to 70 % once complete).
+  const settle = 1 - 0.3 * tween(frame, COMPLETE + 10, COMPLETE + 44, 0, 1, EASE_IN_OUT);
   const rowLight = lit.map((v) => v * settle);
+  const drawOn = LIGHT.map((l) => tween(frame, l - 2, l + 12, 0, 1, EASE_OUT));
   const contributions = DAY.after.contributions;
   const sum = contributions.reduce((acc, c, i) => acc + c * tween(frame, LIGHT[i], LIGHT[i] + 12, 0, 1, EASE_OUT), 0);
-  const resultTint = tween(frame, COMPLETE - 4, COMPLETE + 6) * (1 - tween(frame, COMPLETE + 70, COMPLETE + 110, 0, 1, EASE_IN_OUT));
+  const resultTint = tween(frame, COMPLETE - 4, COMPLETE + 6);
+  // The footer value is held back until the count-up lands on it.
+  const resultValueOpacity = 0.2 + 0.8 * tween(frame, COMPLETE - 4, COMPLETE + 8);
   const pulse = 1 + 0.04 * heroSpring(frame, fps, COMPLETE);
 
-  // Ring: grows out of the caption ring (shared element), then holds.
-  const start = captionRingCentre(orientation);
+  // Ring: grows out of the dashboard's own score ring (shared element), then holds.
+  let start: { cx: number; cy: number; size: number } = captionRingCentre(orientation);
+  if (rects) {
+    const from = heroCardCamera(rects as unknown as TodayRects, orientation, width, height);
+    const [sx, sy] = pageToScreen(from, width, height, rects.ring.cx, rects.ring.cy);
+    start = { cx: sx, cy: sy, size: rects.ring.w * from.s * (200 / 176) }; // ring radius 88 of 100 → match the outer edge
+  }
+  const ringIn = tween(frame, 0, 8);
   const hr = HERO_RING[orientation];
   const m = tween(frame, 0, TRAVEL, 0, 1, EASE_IN_OUT);
   const step = portrait ? tween(frame, COMPLETE + 4, COMPLETE + 36, 0, 1, EASE_IN_OUT) : 0;
@@ -95,11 +105,12 @@ export function Hero({ orientation }: { orientation: Orientation }) {
   const ringNode = (
     <WeightRing
       size={ring.size}
-      highlight={lit}
+      drawOn={drawOn}
+      drawWidth={portrait ? 5.4 : 4.7}
       baseAlpha={0.42}
-      strokeWidth={lerp(3.4, 2.6, m)}
+      strokeWidth={lerp(9, 2.6, m)}
       labels={portrait ? undefined : { opacity: labelsOpacity, fontSize: hr.labelSize, radius: 106, highlight: lit }}
-      style={{ left: ring.cx - ring.size / 2, top: ring.cy - ring.size / 2 }}
+      style={{ left: ring.cx - ring.size / 2, top: ring.cy - ring.size / 2, opacity: ringIn }}
       center={
         <div style={{ textAlign: "center", opacity: centre }}>
           <div className="number-tabular" style={{ fontFamily: "Geist, sans-serif", fontWeight: 600, letterSpacing: "-0.025em", fontSize: hr.size * 0.27, lineHeight: 1, color: "var(--foreground)" }}>
@@ -151,6 +162,7 @@ export function Hero({ orientation }: { orientation: Orientation }) {
                     rowLight={rowLight}
                     weightTint={rowLight}
                     resultTint={resultTint}
+                    resultValueOpacity={resultValueOpacity}
                     weightRefs={weightEls as React.MutableRefObject<(HTMLDivElement | null)[]>}
                     className="max-w-none sm:max-w-none"
                   />
@@ -164,7 +176,7 @@ export function Hero({ orientation }: { orientation: Orientation }) {
       {/* The signature ring: the hero's one motion-blurred move is its growth out of the caption ring. */}
       <AbsoluteFill>{frame <= TRAVEL + 2 ? <CameraMotionBlur samples={8} shutterAngle={180}>{ringNode}</CameraMotionBlur> : ringNode}</AbsoluteFill>
 
-      <div style={{ position: "absolute", left: portrait ? 540 : 190, top: portrait ? 375 : 230 }}>
+      <div style={{ position: "absolute", left: portrait ? 640 : 190, top: portrait ? 470 : 230 }}>
         <KineticText
           frame={frame}
           enter={HEADLINE}

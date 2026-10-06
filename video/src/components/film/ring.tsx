@@ -36,6 +36,8 @@ export function WeightRing({
   labels,
   center,
   style,
+  drawOn,
+  drawWidth = 5,
 }: {
   size: number;
   draw?: number[];
@@ -48,6 +50,10 @@ export function WeightRing({
   labels?: { opacity: number; radius?: number; fontSize: number; highlight?: number[] };
   center?: React.ReactNode;
   style?: React.CSSProperties;
+  /** 0..1 per segment: a thick primary stroke drawn along the segment (the login dial's draw gesture). */
+  drawOn?: number[];
+  /** Stroke width of the draw-on overlay, in the 200-unit viewBox. */
+  drawWidth?: number;
 }) {
   const scale = size / 200;
   return (
@@ -74,6 +80,25 @@ export function WeightRing({
               />
             );
           })}
+          {drawOn &&
+            SEGMENTS.map((seg, i) => {
+              const d = Math.max(0, Math.min(1, drawOn[i] ?? 0));
+              if (d <= 0) return null;
+              const len = seg.length * d;
+              return (
+                <circle
+                  key={`${seg.id}-on`}
+                  cx={CENTER}
+                  cy={CENTER}
+                  r={RING_RADIUS}
+                  pathLength={100}
+                  stroke="var(--primary)"
+                  strokeWidth={drawWidth}
+                  strokeDasharray={`${len} ${100 - len}`}
+                  strokeDashoffset={-seg.start}
+                />
+              );
+            })}
         </g>
       </svg>
       {labels &&
