@@ -4,7 +4,7 @@
 
 | File | Spec (verified with ffprobe) |
 |---|---|
-| `out/film-16x9-2k60.mp4` | __SPEC_16__ |
+| `out/film-16x9-2k60.mp4` | 2560×1440 · 60/1 fps · 1800 frames · 30.0 s · H.264 High, CRF 16, yuv420p · AAC-LC 48 kHz stereo · 12.8 MB · audio peak −2.4 dBFS, −20.9 LUFS integrated |
 | `out/film-9x16-2k60.mp4` | __SPEC_9__ |
 | `out/film-16x9-master.mov` | __SPEC_MOV__ |
 | `out/preview-animatic.mp4` | 1280×720 · 30 fps · 900 frames · H.264 + AAC (Phase D animatic) |
