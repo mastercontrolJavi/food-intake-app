@@ -1,0 +1,11 @@
+node_modules/
+build/
+.remotion/
+# Large / intermediate render outputs (deliverable MP4s are committed; the ProRes master is not)
+out/*.mov
+out/frames/
+out/stills/raw/
+out/tmp/
+*.log
+out/animatic-strip/
+out/stills/**/*.png

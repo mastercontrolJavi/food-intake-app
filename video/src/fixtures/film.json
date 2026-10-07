@@ -1,0 +1,683 @@
+{
+  "generatedBy": "video/scripts/build-fixtures.ts (real Intake scoring + analytics engine; fictional inputs)",
+  "weights": {
+    "calories": 30,
+    "protein": 20,
+    "fiber": 8,
+    "carbs": 6,
+    "fat": 6,
+    "water": 15,
+    "steps": 15
+  },
+  "goals": {
+    "calorieTarget": 2200,
+    "proteinTargetG": 160,
+    "carbsTargetG": 240,
+    "fatTargetG": 70,
+    "fiberTargetG": 30,
+    "waterTargetMl": 2800,
+    "stepTarget": 10000,
+    "weeklyWorkoutTarget": 4
+  },
+  "day": {
+    "localDate": "2026-10-06",
+    "heading": "Tuesday, October 6",
+    "before": {
+      "contributions": [
+        29.59090909090909,
+        20,
+        8,
+        5.633333333333333,
+        5.742857142857142,
+        10.125,
+        13.65
+      ],
+      "score": 92.74209956709957,
+      "roundedScore": 93,
+      "grade": "A",
+      "confidence": "high",
+      "summary": "You reached your protein target, but finished 1050 ml short of your hydration target. Front-load fluids and keep a bottle visible during tomorrow’s session.",
+      "metrics": [
+        {
+          "id": "calories",
+          "label": "Calories",
+          "weight": 30,
+          "unit": "kcal",
+          "actual": 2140,
+          "target": 2200,
+          "score": 98.63636363636364,
+          "roundedScore": 99,
+          "configured": true,
+          "available": true,
+          "ofTarget": "2,140 kcal of 2,200 kcal",
+          "slashTarget": "2,140 kcal / 2,200 kcal",
+          "status": {
+            "label": "60 kcal remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "proteinG",
+          "label": "Protein",
+          "weight": 20,
+          "unit": "g",
+          "actual": 170,
+          "target": 160,
+          "score": 100,
+          "roundedScore": 100,
+          "configured": true,
+          "available": true,
+          "ofTarget": "170 g of 160 g",
+          "slashTarget": "170 g / 160 g",
+          "status": {
+            "label": "10 g over target",
+            "tone": "amber"
+          }
+        },
+        {
+          "id": "fiberG",
+          "label": "Fiber",
+          "weight": 8,
+          "unit": "g",
+          "actual": 32,
+          "target": 30,
+          "score": 100,
+          "roundedScore": 100,
+          "configured": true,
+          "available": true,
+          "ofTarget": "32 g of 30 g",
+          "slashTarget": "32 g / 30 g",
+          "status": {
+            "label": "2 g over target",
+            "tone": "amber"
+          }
+        },
+        {
+          "id": "carbsG",
+          "label": "Carbohydrates",
+          "weight": 6,
+          "unit": "g",
+          "actual": 214,
+          "target": 240,
+          "score": 93.88888888888889,
+          "roundedScore": 94,
+          "configured": true,
+          "available": true,
+          "ofTarget": "214 g of 240 g",
+          "slashTarget": "214 g / 240 g",
+          "status": {
+            "label": "26 g remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "fatG",
+          "label": "Fat",
+          "weight": 6,
+          "unit": "g",
+          "actual": 64,
+          "target": 70,
+          "score": 95.71428571428571,
+          "roundedScore": 96,
+          "configured": true,
+          "available": true,
+          "ofTarget": "64 g of 70 g",
+          "slashTarget": "64 g / 70 g",
+          "status": {
+            "label": "6 g remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "waterMl",
+          "label": "Water",
+          "weight": 15,
+          "unit": "ml",
+          "actual": 1750,
+          "target": 2800,
+          "score": 67.5,
+          "roundedScore": 68,
+          "configured": true,
+          "available": true,
+          "ofTarget": "1,750 ml of 2,800 ml",
+          "slashTarget": "1,750 ml / 2,800 ml",
+          "status": {
+            "label": "1,050 ml remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "steps",
+          "label": "Steps",
+          "weight": 15,
+          "unit": "steps",
+          "actual": 8600,
+          "target": 10000,
+          "score": 91,
+          "roundedScore": 91,
+          "configured": true,
+          "available": true,
+          "ofTarget": "8,600 steps of 10,000 steps",
+          "slashTarget": "8,600 steps / 10,000 steps",
+          "status": {
+            "label": "1,400 steps remaining",
+            "tone": "muted"
+          }
+        }
+      ]
+    },
+    "after": {
+      "contributions": [
+        29.59090909090909,
+        20,
+        8,
+        5.633333333333333,
+        5.742857142857142,
+        12.803571428571429,
+        13.65
+      ],
+      "score": 95.420670995671,
+      "roundedScore": 95,
+      "grade": "A",
+      "confidence": "high",
+      "summary": "You reached your protein target, but finished 550 ml short of your hydration target. Front-load fluids and keep a bottle visible during tomorrow’s session.",
+      "metrics": [
+        {
+          "id": "calories",
+          "label": "Calories",
+          "weight": 30,
+          "unit": "kcal",
+          "actual": 2140,
+          "target": 2200,
+          "score": 98.63636363636364,
+          "roundedScore": 99,
+          "configured": true,
+          "available": true,
+          "ofTarget": "2,140 kcal of 2,200 kcal",
+          "slashTarget": "2,140 kcal / 2,200 kcal",
+          "status": {
+            "label": "60 kcal remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "proteinG",
+          "label": "Protein",
+          "weight": 20,
+          "unit": "g",
+          "actual": 170,
+          "target": 160,
+          "score": 100,
+          "roundedScore": 100,
+          "configured": true,
+          "available": true,
+          "ofTarget": "170 g of 160 g",
+          "slashTarget": "170 g / 160 g",
+          "status": {
+            "label": "10 g over target",
+            "tone": "amber"
+          }
+        },
+        {
+          "id": "fiberG",
+          "label": "Fiber",
+          "weight": 8,
+          "unit": "g",
+          "actual": 32,
+          "target": 30,
+          "score": 100,
+          "roundedScore": 100,
+          "configured": true,
+          "available": true,
+          "ofTarget": "32 g of 30 g",
+          "slashTarget": "32 g / 30 g",
+          "status": {
+            "label": "2 g over target",
+            "tone": "amber"
+          }
+        },
+        {
+          "id": "carbsG",
+          "label": "Carbohydrates",
+          "weight": 6,
+          "unit": "g",
+          "actual": 214,
+          "target": 240,
+          "score": 93.88888888888889,
+          "roundedScore": 94,
+          "configured": true,
+          "available": true,
+          "ofTarget": "214 g of 240 g",
+          "slashTarget": "214 g / 240 g",
+          "status": {
+            "label": "26 g remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "fatG",
+          "label": "Fat",
+          "weight": 6,
+          "unit": "g",
+          "actual": 64,
+          "target": 70,
+          "score": 95.71428571428571,
+          "roundedScore": 96,
+          "configured": true,
+          "available": true,
+          "ofTarget": "64 g of 70 g",
+          "slashTarget": "64 g / 70 g",
+          "status": {
+            "label": "6 g remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "waterMl",
+          "label": "Water",
+          "weight": 15,
+          "unit": "ml",
+          "actual": 2250,
+          "target": 2800,
+          "score": 85.35714285714286,
+          "roundedScore": 85,
+          "configured": true,
+          "available": true,
+          "ofTarget": "2,250 ml of 2,800 ml",
+          "slashTarget": "2,250 ml / 2,800 ml",
+          "status": {
+            "label": "550 ml remaining",
+            "tone": "muted"
+          }
+        },
+        {
+          "id": "steps",
+          "label": "Steps",
+          "weight": 15,
+          "unit": "steps",
+          "actual": 8600,
+          "target": 10000,
+          "score": 91,
+          "roundedScore": 91,
+          "configured": true,
+          "available": true,
+          "ofTarget": "8,600 steps of 10,000 steps",
+          "slashTarget": "8,600 steps / 10,000 steps",
+          "status": {
+            "label": "1,400 steps remaining",
+            "tone": "muted"
+          }
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "time": "8:15 AM",
+        "title": "Greek yogurt, berries and oats",
+        "detail": "420 kcal · 32 g protein",
+        "score": 95
+      },
+      {
+        "time": "9:30 AM",
+        "title": "water",
+        "detail": "750 ml · 0 kcal",
+        "score": null
+      },
+      {
+        "time": "1:10 PM",
+        "title": "Chicken rice bowl with vegetables",
+        "detail": "680 kcal · 55 g protein",
+        "score": 97
+      },
+      {
+        "time": "2:30 PM",
+        "title": "water",
+        "detail": "1000 ml · 0 kcal",
+        "score": null
+      },
+      {
+        "time": "4:30 PM",
+        "title": "Protein shake and banana",
+        "detail": "320 kcal · 35 g protein",
+        "score": 96
+      },
+      {
+        "time": "6:00 PM",
+        "title": "running",
+        "detail": "45 min",
+        "score": null
+      },
+      {
+        "time": "6:45 PM",
+        "title": "steps",
+        "detail": "8,600 steps",
+        "score": null
+      },
+      {
+        "time": "7:15 PM",
+        "title": "Salmon, potatoes and greens",
+        "detail": "720 kcal · 48 g protein",
+        "score": 90,
+        "isNew": true
+      }
+    ],
+    "recentMeals": [
+      {
+        "title": "Protein shake and banana",
+        "detail": "320 kcal · 35 g protein"
+      },
+      {
+        "title": "Chicken rice bowl with vegetables",
+        "detail": "680 kcal · 55 g protein"
+      },
+      {
+        "title": "Greek yogurt, berries and oats",
+        "detail": "420 kcal · 32 g protein"
+      },
+      {
+        "title": "Salmon, potatoes and greens",
+        "detail": "720 kcal · 48 g protein",
+        "target": true
+      },
+      {
+        "title": "Eggs, avocado and toast",
+        "detail": "510 kcal · 26 g protein"
+      }
+    ]
+  },
+  "week": {
+    "title": "Sep 28–Oct 4, 2026",
+    "score": 88.56877282003711,
+    "roundedScore": 89,
+    "grade": "B",
+    "confidence": "high",
+    "sufficientDays": 7,
+    "coverageRatio": 1,
+    "chartPoints": [
+      {
+        "label": "Mon",
+        "value": 97.77926406926406
+      },
+      {
+        "label": "Tue",
+        "value": 98.5577435064935
+      },
+      {
+        "label": "Wed",
+        "value": 99.5126461038961
+      },
+      {
+        "label": "Thu",
+        "value": 98.01753246753248
+      },
+      {
+        "label": "Fri",
+        "value": 98.49176406926406
+      },
+      {
+        "label": "Sat",
+        "value": 64.98903246753247
+      },
+      {
+        "label": "Sun",
+        "value": 97.92426406926407
+      }
+    ],
+    "trackedDays": 7,
+    "completedDays": 7,
+    "mealsLogged": 27,
+    "workoutCount": 2,
+    "hitRates": {
+      "protein": 0.8571428571428571,
+      "fiber": 0.7142857142857143,
+      "water": 0.42857142857142855,
+      "steps": 0.42857142857142855
+    },
+    "sourceCounts": [
+      [
+        "home",
+        24
+      ],
+      [
+        "restaurant",
+        2
+      ],
+      [
+        "takeout",
+        1
+      ]
+    ],
+    "timing": {
+      "first": "08:15",
+      "final": "21:20",
+      "late": 1,
+      "lateRate": 0.037037037037037035
+    },
+    "averages": {
+      "calories": 2147.9857142857145,
+      "protein": 163.3857142857143,
+      "water": 2642.8571428571427,
+      "steps": 9578,
+      "prior": {
+        "calories": 2061.842857142857,
+        "protein": 152.4,
+        "water": 2500,
+        "steps": 8832.42857142857
+      }
+    },
+    "insights": [
+      {
+        "id": "hydration_opportunity",
+        "title": "Water target opportunity",
+        "message": "Water intake was below your configured target on 4 of 7 tracked days.",
+        "category": "hydration",
+        "confidence": "medium"
+      },
+      {
+        "id": "protein_consistency",
+        "title": "Protein consistency",
+        "message": "You reached your protein target on 6 of 7 sufficiently tracked days.",
+        "category": "nutrition",
+        "confidence": "medium"
+      },
+      {
+        "id": "weekend_weekday_difference",
+        "title": "Weekend pattern",
+        "message": "Weekend tracked calories were lower than weekdays in this period (1986 vs 2194 median).",
+        "category": "behavior",
+        "confidence": "medium"
+      }
+    ]
+  },
+  "fidelity": {
+    "heading": "Tuesday, October 6",
+    "score": 98.22479437229435,
+    "grade": "A",
+    "confidence": "high",
+    "summary": "You reached your protein target, but went slightly over your fat target by 6.9 g. Choose leaner protein sources and measure added fats for tomorrow’s split.",
+    "metrics": [
+      {
+        "id": "calories",
+        "label": "Calories",
+        "weight": 30,
+        "unit": "kcal",
+        "actual": 2329.9,
+        "target": 2200,
+        "score": 97.04772727272727,
+        "roundedScore": 97,
+        "configured": true,
+        "available": true,
+        "ofTarget": "2,330 kcal of 2,200 kcal",
+        "slashTarget": "2,330 kcal / 2,200 kcal",
+        "status": {
+          "label": "130 kcal over target",
+          "tone": "amber"
+        }
+      },
+      {
+        "id": "proteinG",
+        "label": "Protein",
+        "weight": 20,
+        "unit": "g",
+        "actual": 163.3,
+        "target": 160,
+        "score": 100,
+        "roundedScore": 100,
+        "configured": true,
+        "available": true,
+        "ofTarget": "163 g of 160 g",
+        "slashTarget": "163 g / 160 g",
+        "status": {
+          "label": "3.3 g over target",
+          "tone": "amber"
+        }
+      },
+      {
+        "id": "fiberG",
+        "label": "Fiber",
+        "weight": 8,
+        "unit": "g",
+        "actual": 29.2,
+        "target": 30,
+        "score": 98.66666666666666,
+        "roundedScore": 99,
+        "configured": true,
+        "available": true,
+        "ofTarget": "29.2 g of 30 g",
+        "slashTarget": "29.2 g / 30 g",
+        "status": {
+          "label": "0.8 g remaining",
+          "tone": "muted"
+        }
+      },
+      {
+        "id": "carbsG",
+        "label": "Carbohydrates",
+        "weight": 6,
+        "unit": "g",
+        "actual": 229.60000000000002,
+        "target": 240,
+        "score": 97.83333333333334,
+        "roundedScore": 98,
+        "configured": true,
+        "available": true,
+        "ofTarget": "230 g of 240 g",
+        "slashTarget": "230 g / 240 g",
+        "status": {
+          "label": "10.4 g remaining",
+          "tone": "muted"
+        }
+      },
+      {
+        "id": "fatG",
+        "label": "Fat",
+        "weight": 6,
+        "unit": "g",
+        "actual": 76.9,
+        "target": 70,
+        "score": 95.07142857142857,
+        "roundedScore": 95,
+        "configured": true,
+        "available": true,
+        "ofTarget": "76.9 g of 70 g",
+        "slashTarget": "76.9 g / 70 g",
+        "status": {
+          "label": "6.9 g over target",
+          "tone": "amber"
+        }
+      },
+      {
+        "id": "waterMl",
+        "label": "Water",
+        "weight": 15,
+        "unit": "ml",
+        "actual": 2700,
+        "target": 2800,
+        "score": 97.61904761904762,
+        "roundedScore": 98,
+        "configured": true,
+        "available": true,
+        "ofTarget": "2,700 ml of 2,800 ml",
+        "slashTarget": "2,700 ml / 2,800 ml",
+        "status": {
+          "label": "100 ml remaining",
+          "tone": "muted"
+        }
+      },
+      {
+        "id": "steps",
+        "label": "Steps",
+        "weight": 15,
+        "unit": "steps",
+        "actual": 10350,
+        "target": 10000,
+        "score": 100,
+        "roundedScore": 100,
+        "configured": true,
+        "available": true,
+        "ofTarget": "10,350 steps of 10,000 steps",
+        "slashTarget": "10,350 steps / 10,000 steps",
+        "status": {
+          "label": "350 steps over target",
+          "tone": "amber"
+        }
+      }
+    ],
+    "timeline": [
+      {
+        "time": "8:15 AM",
+        "title": "Greek yogurt, berries and oats",
+        "detail": "418 kcal · 31.8 g protein",
+        "score": 95
+      },
+      {
+        "time": "9:30 AM",
+        "title": "water",
+        "detail": "900 ml · 0 kcal",
+        "score": null
+      },
+      {
+        "time": "1:10 PM",
+        "title": "Chicken rice bowl with vegetables",
+        "detail": "677 kcal · 54.7 g protein",
+        "score": 97
+      },
+      {
+        "time": "2:30 PM",
+        "title": "water",
+        "detail": "900 ml · 0 kcal",
+        "score": null
+      },
+      {
+        "time": "4:30 PM",
+        "title": "Protein shake and banana",
+        "detail": "318 kcal · 34.8 g protein",
+        "score": 96
+      },
+      {
+        "time": "6:00 PM",
+        "title": "running",
+        "detail": "47 min",
+        "score": null
+      },
+      {
+        "time": "7:00 PM",
+        "title": "water",
+        "detail": "900 ml · 0 kcal",
+        "score": null
+      },
+      {
+        "time": "7:15 PM",
+        "title": "Fast-food dinner",
+        "detail": "917 kcal · 42 g protein",
+        "score": 63
+      },
+      {
+        "time": "8:30 PM",
+        "title": "steps",
+        "detail": "10,350 steps",
+        "score": null
+      }
+    ]
+  }
+}
