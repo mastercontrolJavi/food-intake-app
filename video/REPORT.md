@@ -37,7 +37,7 @@ up, contribution by contribution, from 0 to 95.
 | B — Concept | 3 · 2 · 3 · 3 · 3 (4 serious, all fixed) | muted-by-10s 4 · hook 4 · distinctive 4 · real features 5 · product-specific 4 |
 | C — Stills | 4 · 2 · 3 · 3 · 3 (serious: tilt softness, hero — fixed) | tokens 5 · crisp 5 · hierarchy 4 · 9:16 5 · not a template 4 |
 | D — Animatic | — | readability 5 (all lines pass) · cuts on beat 5 (all 0 frames) · pacing 4 · reads muted 4 |
-| E — Final | pass 1: 3 · 3 · 2 · 4; pass 2: 3 · 3 · 3 · 4; pass 3 (on the rendered MP4): studio 3 · smooth 3 · hero 4 · banned 5 · specs 5 | __FINAL_E__ |
+| E — Final | pass 1: 3 · 3 · 2 · 4; pass 2: 3 · 3 · 3 · 4; pass 3 (on the rendered MP4): studio 3 · smooth 3 · hero 4 · banned 5 · specs 5 | self, after round 3 (the last allowed), judged on frames pulled from the final MP4s: studio 4 · smooth 4 · hero 4 · banned 5 · specs 5 |
 
 Fidelity check: the rebuilt Today screen vs the real app screenshot (dark, 1440 px @2x) differs by a mean
 of 0.4–3.0 / 255 per pixel. Every layout measurement waits for Geist to load (a fallback-font measurement had
@@ -73,6 +73,10 @@ pushing that branch) instead of `motion-film`.
   git-ignored, and reproducible with `npm run render:master`.
 - **Click-throughs of authenticated flows:** no Supabase credentials; the public `/demo` was used for every
   screenshot and the rebuild was pixel-diffed against it.
+- **A fourth independent critique:** the brief caps each gate at three fix rounds. Critic pass 3 scored the
+  pre-round-3 render, so the final Gate E score is my own. I judged it on frames pulled from the final MP4s,
+  including consecutive frames around every cut and move. I can't watch real-time playback, so "smooth" is
+  inferred from those frame sequences, not felt.
 - **Liquid-glass displacement filter and backdrop blur** are omitted (invisible at film scale over an
   already-blurred glow, very expensive to render).
 
