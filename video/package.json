@@ -14,7 +14,8 @@
     "render:9x16": "remotion render Film9x16 out/film-9x16-2k60.mp4 --codec=h264 --crf=16 --pixel-format=yuv420p",
     "render:master": "remotion render Film16x9 out/film-16x9-master.mov --codec=prores --prores-profile=hq",
     "render": "npm run render:16x9 && npm run render:9x16 && npm run render:master",
-    "timing": "tsx scripts/timing-report.ts"
+    "timing": "tsx scripts/timing-report.ts",
+    "cover": "remotion still Cover16x9 out/cover/intake-film-cover-16x9.png && remotion still Cover4x3 out/cover/intake-film-cover-4x3.png && remotion still Cover16x9 out/cover/intake-film-cover-16x9.jpg --image-format=jpeg --jpeg-quality=92 && remotion still Cover4x3 out/cover/intake-film-cover-4x3.jpg --image-format=jpeg --jpeg-quality=92"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.533",

@@ -26,6 +26,7 @@ npm run render:9x16       # out/film-9x16-2k60.mp4
 npm run render:master     # out/film-16x9-master.mov (ProRes 422 HQ)
 npm run render            # all three
 npm run preview           # out/preview-animatic.mp4 (1280×720, 30 fps)
+npm run cover             # out/cover/intake-film-cover-{16x9,4x3}.{png,jpg} (portfolio cover stills)
 ```
 
 Set `REMOTION_CONCURRENCY` to change parallelism (default 3). The config uses the machine's
