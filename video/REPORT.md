@@ -6,7 +6,8 @@
 |---|---|
 | `out/film-16x9-2k60.mp4` | 2560×1440 · 60/1 fps · 1800 frames · 30.0 s · H.264 High, CRF 16, yuv420p · AAC-LC 48 kHz stereo · 12.8 MB · audio peak −2.4 dBFS, −20.9 LUFS integrated |
 | `out/film-9x16-2k60.mp4` | 1440×2560 · 60/1 fps · 1800 frames · 30.0 s · H.264 High, CRF 16, yuv420p · AAC-LC 48 kHz stereo · 12.7 MB · same mix (peak −2.4 dBFS); all text and key UI inside y 260–2260 |
-| `out/film-16x9-master.mov` | __SPEC_MOV__ |
+| `out/film-16x9-master.mov` | 2560×1440 · 60/1 fps · 1800 frames · 30.0 s · ProRes 422 HQ, yuv422p10le · PCM 16-bit 48 kHz stereo · 954.5 MB · same mix (peak −2.4 dBFS) · rendered locally, not in git |
+| `out/cover/intake-film-cover-{16x9,4x3}.{png,jpg}` | Portfolio cover stills: 2560×1440 and 2400×1800, from the film's hero moment (`npm run cover`) |
 | `out/preview-animatic.mp4` | 1280×720 · 30 fps · 900 frames · H.264 + AAC (Phase D animatic) |
 
 Stills: `out/stills/gateE/` (first frame of every scene, hero mid/complete/peak, last frame, both
@@ -69,7 +70,7 @@ pushing that branch) instead of `motion-film`.
 ## What I couldn't do, and why
 - **Real music:** no `public/audio/track.mp3` was provided, so the bed is synthesized (`scripts/make-audio.py`)
   on the 100 BPM grid. It's tasteful, but it's a placeholder for a licensed track.
-- **ProRes master in git:** the `.mov` is ~__MOV_SIZE__ — over GitHub's file limit — so it's rendered locally,
+- **ProRes master in git:** the `.mov` is 954.5 MB — over GitHub's file limit — so it's rendered locally,
   git-ignored, and reproducible with `npm run render:master`.
 - **Click-throughs of authenticated flows:** no Supabase credentials; the public `/demo` was used for every
   screenshot and the rebuild was pixel-diffed against it.
