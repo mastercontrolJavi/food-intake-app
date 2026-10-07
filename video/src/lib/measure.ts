@@ -1,5 +1,6 @@
 import { useCallback, useLayoutEffect, useRef, useState, type MutableRefObject } from "react";
 import { continueRender, delayRender } from "remotion";
+import { ensureFonts } from "../theme/fonts";
 
 /**
  * Measures named elements inside a page root in page css px (offset chain, so camera transforms never
@@ -41,21 +42,29 @@ export function usePageRects<K extends string>(
   );
 
   useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (root) {
-      const out = {} as Record<K, Rect>;
-      for (const key of keys) {
-        const el = els.current[key];
-        out[key] = el ? offsetWithin(el, root) : ZERO;
+    let cancelled = false;
+    // Measure only once Geist is in: a fallback font wraps text differently and shifts everything below it.
+    ensureFonts().then(() => {
+      if (cancelled) return;
+      const root = rootRef.current;
+      if (root) {
+        const out = {} as Record<K, Rect>;
+        for (const key of keys) {
+          const el = els.current[key];
+          out[key] = el ? offsetWithin(el, root) : ZERO;
+        }
+        const outLists: Record<string, Rect[]> = {};
+        for (const [name, arr] of Object.entries(lists)) {
+          outLists[name] = arr.current.map((el) => (el ? offsetWithin(el, root) : ZERO));
+        }
+        setRects(out);
+        setListRects(outLists);
       }
-      const outLists: Record<string, Rect[]> = {};
-      for (const [name, arr] of Object.entries(lists)) {
-        outLists[name] = arr.current.map((el) => (el ? offsetWithin(el, root) : ZERO));
-      }
-      setRects(out);
-      setListRects(outLists);
-    }
-    continueRender(handle);
+      continueRender(handle);
+    });
+    return () => {
+      cancelled = true;
+    };
     // Layout is static for the life of a scene; measure once.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handle]);

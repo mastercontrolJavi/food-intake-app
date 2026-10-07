@@ -11,8 +11,8 @@ import { sceneBeat, sceneWindow } from "../timing";
 
 /**
  * Scene 5 (beats 32–40): the weekly review's evidence. The cut lands on the finished review (score
- * trend, coverage, first pattern insight) and the camera pushes slowly toward the insight, which is about
- * water — so the caption ring lights its water segment.
+ * trend and/or coverage above the first pattern insight) and the camera pushes slowly in. The insight is
+ * about water, so the caption ring lights its water segment.
  */
 export function Patterns({ orientation }: { orientation: Orientation }) {
   const frame = useCurrentFrame();
@@ -23,25 +23,23 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
   let cam: CameraState = { x: 700, y: 500, s: 2 };
   let style: React.CSSProperties = bandMask(orientation, true);
   if (rects) {
-    // 9:16: box bottom raised so the next insight lands in the feathered band below the safe area.
-    const box = portrait ? { ...UI_BOX.portrait, h: 1440 } : UI_BOX[orientation];
+    const box = UI_BOX[orientation];
+    // The whole evidence block, one slow push (it starts from a slightly smaller framing and ends filling
+    // the box, so nothing ever slides under the caption): 16:9 the trend + coverage row above the first
+    // insight; 9:16 (mobile stack) the coverage card above it.
+    const blockTop = portrait ? rects.coverage.y : rects.chart.y;
     const insightBottom = rects.firstInsight.y + rects.firstInsight.h + 10;
-    // Open on the week (16:9: the whole trend + coverage row; 9:16: coverage above the card), then push
-    // toward the evidence. Both framings sit on the box's bottom edge, so the next insight stays outside it.
-    const wide = portrait
-      ? { x: rects.insights.x, y: rects.insights.y - 160, w: rects.insights.w, h: insightBottom - (rects.insights.y - 160) }
-      : { x: rects.chart.x, y: rects.chart.y, w: rects.insights.w, h: insightBottom - rects.chart.y };
-    const close = { x: rects.insights.x, y: rects.insights.y, w: rects.insights.w, h: insightBottom - rects.insights.y };
-    const a = frameRect(wide, box, width, height, 4, "bottom");
-    const b = frameRect(close, box, width, height, 4, "bottom");
+    const block = { x: rects.insights.x, y: blockTop, w: rects.insights.w, h: insightBottom - blockTop };
+    const inset = portrait ? 120 : 90;
+    const a = frameRect(block, { ...box, y: box.y + inset, h: box.h - inset }, width, height, 4, "bottom");
+    const b = frameRect(block, box, width, height, 4, "bottom");
     cam = mixCam(a, b, tween(frame, 0, durationInFrames, 0, 1, EASE_IN_OUT));
-    // Fades in the gaps: above the framed block (24 css px) and below the first insight (12 css px).
+    // Fades in the gaps: above the block (24 css px) and below the first insight (12 css px).
     const y = (py: number) => pageToScreen(cam, width, height, 0, py)[1];
-    const top = portrait ? y(rects.insights.y) : y(rects.chart.y);
-    const bottom = y(rects.firstInsight.y + rects.firstInsight.h);
-    style = bandMask(orientation, true, top, bottom, [20 * cam.s, 10 * cam.s]);
+    style = bandMask(orientation, true, y(blockTop), y(rects.firstInsight.y + rects.firstInsight.h), [20 * cam.s, 10 * cam.s]);
   }
-  const water = tween(frame, 8, 22);
+  const captionIn = sceneBeat("patterns", 32.2);
+  const water = tween(frame, captionIn + 16, captionIn + 30);
   return (
     <Stage>
       <AbsoluteFill style={style}>
@@ -53,9 +51,8 @@ export function Patterns({ orientation }: { orientation: Orientation }) {
         frame={frame}
         orientation={orientation}
         text="Patterns, only with evidence."
-        enter={sceneBeat("patterns", 32.25)}
+        enter={captionIn}
         exit={durationInFrames + 20}
-        ringEnter={0}
         highlight={[0, 0, 0, 0, 0, water, 0]}
       />
     </Stage>

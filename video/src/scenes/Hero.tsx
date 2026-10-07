@@ -23,22 +23,22 @@ import { heroCardCamera, TODAY_KEYS, type TodayRects } from "./Water";
  *  Beats 21.7–24.7, every half-beat: one segment draws on along its arc, its label and dialog row light, and the
  *              ring's centre adds that metric's weighted contribution (score × weight ÷ available weight —
  *              the engine's formula) — 0 → 30 → 50 → 58 → 63 → 69 → 82 → 95.
+ *  Beat 21.5   "Every point, explained." (while the points are being explained)
  *  Beat 25     The sum completes: the ring settles with the film's single overshoot; "95 / 100" lands.
- *  Beat 25.5   "Every point, explained."
  */
 const TRAVEL = 44;
 const LIGHT0 = 60;
 const STEP = 18;
 const LIGHT = SEGMENTS.map((_, i) => LIGHT0 + i * STEP);
 const COMPLETE = LIGHT[LIGHT.length - 1] + 14;
-const HEADLINE = sceneBeat("hero", 25.5);
+const DIALOG_OPEN = 4;
+// The thesis lands as the first segment lights, so the statement frames the count-up instead of trailing it.
+const HEADLINE = sceneBeat("hero", 21.5);
 
 const HERO_RING = {
   landscape: { cx: 700, cy: 900, size: 600, labelSize: 32 },
-  portrait: { cx: 720, cy: 560, size: 520, labelSize: 0 }, // 9:16: unlabelled — no room for seven labels
+  portrait: { cx: 330, cy: 560, size: 520, labelSize: 0 }, // 9:16: unlabelled (no room for seven labels); headline to its right
 } as const;
-/** 9:16: after the sum completes, labels give way and the ring steps left for the headline. */
-const PORTRAIT_RING_END = { cx: 330, cy: 560 };
 const DIALOG_BOX = {
   landscape: { x: 1330, y: 96, w: 1080, h: 1248 },
   portrait: { x: 60, y: 900, w: 1320, h: 1300 },
@@ -52,19 +52,33 @@ export function Hero({ orientation }: { orientation: Orientation }) {
   const portrait = orientation === "portrait";
   const weightEls = useRef<(HTMLElement | null)[]>([]);
   const { rootRef, ref, rects } = usePageRects(TODAY_KEYS);
-  const dlg = usePageRects(["dialog"] as const, { weights: weightEls });
+  const { rootRef: dialogRootRef, ref: dialogRef, rects: dialogRects } = usePageRects(["dialog"] as const, { weights: weightEls });
 
-  // Camera: score card → whole dialog, then a slow push through the hold.
+  // Two planes, like the app's modal: the dashboard recedes from the score-card framing as it dissolves,
+  // while the dialog (fixed in the viewport) is framed whole from its first frame, then slowly pushed.
   let cam: CameraState = { x: 720, y: 400, s: 2 };
-  if (rects && dlg.rects) {
+  let dialogCam: CameraState = cam;
+  if (rects) {
     const from = heroCardCamera(rects as unknown as TodayRects, orientation, width, height);
-    const to = frameRect(dlg.rects.dialog, DIALOG_BOX[orientation], width, height);
-    const push = { ...to, s: to.s * 1.025 };
-    cam = mixCam(mixCam(from, to, tween(frame, 0, 56, 0, 1, EASE_IN_OUT)), push, tween(frame, 56, durationInFrames, 0, 1, (t) => t));
+    cam = mixCam(from, { ...from, s: from.s * 0.94 }, tween(frame, 0, 30, 0, 1, EASE_IN_OUT));
+  }
+  if (dialogRects) {
+    const to = frameRect(dialogRects.dialog, DIALOG_BOX[orientation], width, height);
+    dialogCam = mixCam(to, { ...to, s: to.s * 1.025 }, tween(frame, 0, durationInFrames, 0, 1, (t) => t));
   }
 
-  // The dashboard falls away as the dialog opens (no duplicate score behind the breakdown).
-  const open = uiSpring(frame, fps, 0, 14);
+  // Same band as the end of scene 3 (score card only), so nothing new appears on the cut.
+  let pageMask: React.CSSProperties = uiMask(orientation, true);
+  if (rects) {
+    const y = (py: number) => pageToScreen(cam, width, height, 0, py)[1];
+    const top = portrait ? y(rects.hero.y) : y(rects.hero.y - 84);
+    const bottom = y(rects.hero.y + rects.hero.h);
+    pageMask = bandMask(orientation, true, top, bottom, [(portrait ? 26 : 20) * cam.s, 20 * cam.s]);
+  }
+
+  // The dashboard falls away as the dialog opens (no duplicate score behind the breakdown). The dialog
+  // opens on the click's release.
+  const open = uiSpring(frame, fps, DIALOG_OPEN, 14);
   const pageOut = tween(frame, 0, 18, 0, 1, EASE_IN_OUT);
   const press = pressAt(frame, 0);
 
@@ -91,10 +105,9 @@ export function Hero({ orientation }: { orientation: Orientation }) {
   const ringIn = tween(frame, 0, 8);
   const hr = HERO_RING[orientation];
   const m = tween(frame, 0, TRAVEL, 0, 1, EASE_IN_OUT);
-  const step = portrait ? tween(frame, COMPLETE + 4, COMPLETE + 36, 0, 1, EASE_IN_OUT) : 0;
   const ring = {
-    cx: lerp(lerp(start.cx, hr.cx, m), PORTRAIT_RING_END.cx, step),
-    cy: lerp(lerp(start.cy, hr.cy, m), PORTRAIT_RING_END.cy, step),
+    cx: lerp(start.cx, hr.cx, m),
+    cy: lerp(start.cy, hr.cy, m),
     size: lerp(start.size, hr.size, m) * pulse,
   };
   const labelsOpacity = portrait ? 0 : tween(frame, TRAVEL - 10, TRAVEL + 10);
@@ -125,7 +138,7 @@ export function Hero({ orientation }: { orientation: Orientation }) {
   return (
     <Stage>
       {/* The dashboard the click came from, dissolving. */}
-      <AbsoluteFill style={{ ...(uiMask(orientation, true) as React.CSSProperties), opacity: 1 - pageOut }}>
+      <AbsoluteFill style={{ ...(pageMask as React.CSSProperties), opacity: 1 - pageOut }}>
         <Camera cam={cam}>
           <TodayPage
             orientation={orientation}
@@ -151,10 +164,10 @@ export function Hero({ orientation }: { orientation: Orientation }) {
 
       {/* The breakdown dialog (DialogContent is fixed-centred in the device viewport). */}
       <AbsoluteFill style={bandMask(orientation, false) as React.CSSProperties}>
-        <Camera cam={cam}>
-          <div ref={dlg.rootRef} style={{ position: "relative", width: portrait ? 390 : 1440, height: vh }}>
+        <Camera cam={dialogCam}>
+          <div ref={dialogRootRef} style={{ position: "relative", width: portrait ? 390 : 1440, height: vh }}>
             <div style={{ position: "absolute", left: 0, top: 0, width: portrait ? 390 : 1440, height: vh, display: "grid", placeItems: "center" }}>
-              <div ref={dlg.ref("dialog")} className="dark" style={{ width: portrait ? 358 : 384, transform: `scale(${0.95 + 0.05 * open})`, opacity: open }}>
+              <div ref={dialogRef("dialog")} className="dark" style={{ width: portrait ? 358 : 384, transform: `scale(${0.95 + 0.05 * open})`, opacity: open }}>
                 <div className="text-foreground antialiased">
                   <ScoreDialog
                     metrics={AFTER_METRICS}

@@ -5,7 +5,7 @@ import { Camera, frameRect, mixCam, pageToScreen, type CameraState } from "../co
 import { Cursor, cursorPosition, pressAt } from "../components/film/cursor";
 import { RingCaption } from "../components/film/kinetic";
 import { Stage } from "../components/film/stage";
-import { bandMask, STAGE, UI_BOX, uiMask, type Orientation } from "../layout";
+import { bandMask, UI_BOX, uiMask, type Orientation } from "../layout";
 import { BEFORE_METRICS, DAY, TIMELINE } from "../lib/fixtures";
 import { usePageRects } from "../lib/measure";
 import { EASE_IN_OUT, EASE_OUT, tween } from "../lib/motion";
@@ -14,11 +14,12 @@ import { sceneBeat, sceneWindow } from "../timing";
 // Tap on the half-beat, cut on beat 7: the new timeline row then holds 3 s (its detail line needs 2.8 s).
 const CLICK = sceneBeat("log", 6.5);
 const CUT = sceneBeat("log", 7);
+export const CAPTION_IN = sceneBeat("log", 5.2);
 
-/** The five nutrition segments (calories, protein, fiber, carbs, fat) light up when a meal is logged. */
-export function mealHighlight(frame: number, click: number) {
+/** The five nutrition segments (calories, protein, fiber, carbs, fat) light up when a meal is logged and stay lit until `off`. */
+export function mealHighlight(frame: number, click: number, off: number) {
   return [0, 1, 2, 3, 4, 5, 6].map((i) =>
-    i <= 4 ? tween(frame, click + 2 + i * 3, click + 14 + i * 3) * (1 - tween(frame, click + 70, click + 110, 0, 1, EASE_IN_OUT)) : 0,
+    i <= 4 ? tween(frame, click + 2 + i * 3, click + 14 + i * 3) * (1 - tween(frame, off - 26, off, 0, 1, EASE_IN_OUT)) : 0,
   );
 }
 
@@ -26,7 +27,7 @@ export function mealHighlight(frame: number, click: number) {
 export function LogAgain({ orientation }: { orientation: Orientation }) {
   const frame = useCurrentFrame();
   const { durationInFrames } = sceneWindow("log");
-  const highlight = mealHighlight(frame, CLICK);
+  const highlight = mealHighlight(frame, CLICK, durationInFrames - 2);
   return (
     <Stage>
       <Sequence durationInFrames={CUT} layout="none">
@@ -35,15 +36,15 @@ export function LogAgain({ orientation }: { orientation: Orientation }) {
       <Sequence from={CUT} layout="none">
         <TimelinePart orientation={orientation} />
       </Sequence>
-      {/* The ring stays up through the cut: scene 3 continues it in the same spot. */}
+      {/* The ring arrives with its caption and stays up through the cut: scene 3 continues it in the same spot. */}
       <RingCaption
         frame={frame}
         orientation={orientation}
         text="Log again in one tap."
-        enter={sceneBeat("log", 5.5)}
-        exit={Math.min(durationInFrames, sceneBeat("log", 11.5))}
-        ringEnter={0}
+        enter={CAPTION_IN}
+        exit={durationInFrames}
         highlight={highlight}
+        pulseAt={CLICK + 2}
       />
     </Stage>
   );

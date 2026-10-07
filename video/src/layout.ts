@@ -12,14 +12,14 @@ export const STAGE = {
     height: 1440,
     hookRing: { cx: 1800, cy: 730, size: 940 },
     hookText: { left: 190, top: 560, fontSize: 112 },
-    caption: { left: 190, cy: 168, fontSize: 58, ring: 150 },
+    caption: { left: 190, cy: 176, fontSize: 58, ring: 200 },
   },
   portrait: {
     width: 1440,
     height: 2560,
     hookRing: { cx: 720, cy: 1010, size: 760 },
     hookText: { left: 0, top: 1700, fontSize: 118 },
-    caption: { left: 90, cy: 385, fontSize: 64, ring: 170 },
+    caption: { left: 80, cy: 395, fontSize: 60, ring: 220 },
   },
 } as const;
 
@@ -31,8 +31,8 @@ export function captionRingCentre(o: Orientation) {
 
 /** Screen box UI is framed into while a caption occupies the top band. */
 export const UI_BOX = {
-  landscape: { x: 190, y: 290, w: 2180, h: 1060 },
-  portrait: { x: 60, y: 560, w: 1320, h: 1620 },
+  landscape: { x: 190, y: 330, w: 2180, h: 1020 },
+  portrait: { x: 60, y: 600, w: 1320, h: 1580 },
 } as const;
 /** Screen box for UI when no caption is showing. */
 export const UI_BOX_FULL = {
@@ -48,9 +48,9 @@ const EDGES = "linear-gradient(to right, transparent 0px, black 120px, black cal
 const EDGES_V = "linear-gradient(to bottom, transparent 0px, black 90px, black calc(100% - 90px), transparent 100%)";
 
 export const CAPTION_MASK = {
-  landscape: "linear-gradient(to bottom, transparent 0px, transparent 250px, black 285px, black 100%)",
+  landscape: "linear-gradient(to bottom, transparent 0px, transparent 262px, black 340px, black 100%)",
   // 9:16 also keeps the bottom 300 px clear (safe band ends at y = 2260).
-  portrait: "linear-gradient(to bottom, transparent 0px, transparent 480px, black 540px, black 2250px, transparent 2290px)",
+  portrait: "linear-gradient(to bottom, transparent 0px, transparent 500px, black 590px, black 2250px, transparent 2290px)",
 } as const;
 const SAFE_V_PORTRAIT = "linear-gradient(to bottom, transparent 0px, transparent 230px, black 270px, black 2250px, transparent 2290px)";
 

@@ -14,7 +14,9 @@ export const WATER_CLICK = sceneBeat("water", 14);
 // Hold on the water bar long enough to read the new total, then glide to the score card.
 const PAN_START = WATER_CLICK + 90; // new total stays in frame ≥ 1.9 s (5 words)
 const PAN_END = PAN_START + 54;
-export const SCORE_UPDATE = PAN_END - 6;
+// The score moves only once the camera has settled on the card (93 → 94 → 95 with the ring sweep).
+export const SCORE_UPDATE = PAN_END;
+export const CAPTION_IN = sceneBeat("water", 12.2);
 
 export const TODAY_KEYS = ["hero", "ring", "why", "targets", "water", "quick", "plus500", "timeline"] as const;
 export type TodayRects = Record<(typeof TODAY_KEYS)[number], Rect>;
@@ -70,7 +72,7 @@ export function Water({ orientation }: { orientation: Orientation }) {
     const w = rects.why;
     cursor = cursorPosition(frame, [
       { from: orientation === "portrait" ? [p.cx + 140, p.cy - 120] : [p.cx - 260, p.cy + 190], to: [p.cx + 24, p.cy + 9], start: 2, end: WATER_CLICK - 8 },
-      { from: [p.cx + 24, p.cy + 9], to: [w.cx - 30, w.cy + 3], start: SCORE_UPDATE + 14, end: durationInFrames - 4, bend: -0.12 },
+      { from: [p.cx + 24, p.cy + 9], to: [w.cx - 30, w.cy + 3], start: SCORE_UPDATE + 6, end: durationInFrames - 4, bend: -0.12 },
     ]);
   }
 
@@ -80,8 +82,14 @@ export function Water({ orientation }: { orientation: Orientation }) {
   const updated = frame >= SCORE_UPDATE;
   const sweep = tween(frame, SCORE_UPDATE, SCORE_UPDATE + 16, 0, 1, EASE_OUT);
   const ringScore = (DAY.before.score ?? 0) + ((DAY.after.score ?? 0) - (DAY.before.score ?? 0)) * sweep;
-  const summaryT = tween(frame, SCORE_UPDATE, SCORE_UPDATE + 10, 0, 1, EASE_IN_OUT);
-  const waterHighlight = tween(frame, WATER_CLICK + 2, WATER_CLICK + 14) * (1 - tween(frame, WATER_CLICK + 80, WATER_CLICK + 130, 0, 1, EASE_IN_OUT));
+  const before = DAY.before.roundedScore ?? 0;
+  const after = DAY.after.roundedScore ?? 0;
+  const displayScore = updated ? Math.round(before + (after - before) * sweep) : before;
+  // Summary swaps sequentially (old text out, then new text in) so the two never overlap.
+  const summaryOut = tween(frame, SCORE_UPDATE, SCORE_UPDATE + 8, 0, 1, EASE_IN_OUT);
+  const summaryIn = tween(frame, SCORE_UPDATE + 8, SCORE_UPDATE + 18, 0, 1, EASE_OUT);
+  const ringExit = sceneBeat("water", 19.5);
+  const waterHighlight = tween(frame, WATER_CLICK + 2, WATER_CLICK + 14) * (1 - tween(frame, ringExit - 26, ringExit - 2, 0, 1, EASE_IN_OUT));
 
   return (
     <Stage>
@@ -98,13 +106,13 @@ export function Water({ orientation }: { orientation: Orientation }) {
               timeline: TIMELINE,
               hero: {
                 ringScore,
-                displayScore: updated ? DAY.after.roundedScore ?? 0 : DAY.before.roundedScore ?? 0,
+                displayScore,
                 grade: DAY.after.grade ?? "—",
                 confidence: DAY.after.confidence,
                 summary: (
                   <span style={{ display: "grid" }}>
-                    <span style={{ gridArea: "1 / 1", opacity: 1 - summaryT }}>{DAY.before.summary}</span>
-                    <span style={{ gridArea: "1 / 1", opacity: summaryT }}>{DAY.after.summary}</span>
+                    <span style={{ gridArea: "1 / 1", opacity: 1 - summaryOut }}>{DAY.before.summary}</span>
+                    <span style={{ gridArea: "1 / 1", opacity: summaryIn }}>{DAY.after.summary}</span>
                   </span>
                 ),
               },
@@ -113,16 +121,17 @@ export function Water({ orientation }: { orientation: Orientation }) {
           {rects && <Cursor x={cursor[0]} y={cursor[1]} press={press} />}
         </Camera>
       </AbsoluteFill>
-      {/* Ring visible from the cut (continued from scene 2); the hero grows its ring out of the score card. */}
+      {/* Ring continued from scene 2 through the cut; it leaves with its caption before the hero. */}
       <RingCaption
         frame={frame}
         orientation={orientation}
         text="Graded against goals you choose."
-        enter={sceneBeat("water", 12.5)}
-        exit={sceneBeat("water", 19.5)}
+        enter={CAPTION_IN}
+        exit={ringExit}
         ringEnter={0}
-        ringExit={sceneBeat("water", 19.5)}
+        ringExit={ringExit}
         highlight={[0, 0, 0, 0, 0, waterHighlight, 0]}
+        pulseAt={WATER_CLICK + 2}
       />
     </Stage>
   );

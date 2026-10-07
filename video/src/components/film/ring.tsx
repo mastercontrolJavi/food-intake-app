@@ -150,13 +150,20 @@ export function IntakeDial({
   size,
   arcDraw = [1, 1, 1],
   plate = 1,
+  ringTint = 0,
   style,
 }: {
   size: number;
   arcDraw?: number[];
   plate?: number;
+  /** 0..1: outer segments lit in primary (1) → the dial's resting foreground/35 (0). */
+  ringTint?: number;
   style?: React.CSSProperties;
 }) {
+  const t = Math.max(0, Math.min(1, ringTint));
+  const ringStroke = t > 0
+    ? `color-mix(in oklab, var(--primary) ${t * 100}%, color-mix(in oklab, var(--foreground) 35%, transparent))`
+    : "color-mix(in oklab, var(--foreground) 35%, transparent)";
   return (
     <div style={{ position: "absolute", width: size, height: size, display: "grid", placeItems: "center", ...style }}>
       <svg viewBox="0 0 200 200" width={size} height={size} style={{ gridArea: "1 / 1" }}>
@@ -168,7 +175,7 @@ export function IntakeDial({
               cy={CENTER}
               r={RING_RADIUS}
               pathLength={100}
-              stroke="color-mix(in oklab, var(--foreground) 35%, transparent)"
+              stroke={ringStroke}
               strokeWidth={2.5}
               strokeDasharray={`${seg.length} ${100 - seg.length}`}
               strokeDashoffset={-seg.start}

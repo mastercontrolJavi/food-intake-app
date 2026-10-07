@@ -106,9 +106,9 @@ export function Caption({
 }
 
 /**
- * Caption with the signature ring beside it: a small, complete weight ring (never behind UI) whose
- * segments light for the metrics the on-screen action touches. The ring may outlive the text
- * (`ringExit`), so it can hand off to the next scene or grow into the hero ring.
+ * Caption with the signature ring beside it: a complete weight ring (never behind UI) that arrives with
+ * its caption and lights, in full primary, the segments the on-screen action touches; it pulses once on
+ * the tap (`pulseAt`). The ring may outlive the text (`ringExit`) to carry across a cut.
  */
 export function RingCaption({
   frame,
@@ -119,6 +119,7 @@ export function RingCaption({
   ringEnter = enter,
   ringExit,
   highlight,
+  pulseAt,
 }: {
   frame: number;
   orientation: Orientation;
@@ -128,14 +129,17 @@ export function RingCaption({
   ringEnter?: number;
   ringExit?: number;
   highlight?: number[];
+  pulseAt?: number;
 }) {
   const c = STAGE[orientation].caption;
   const ringIn = ringEnter <= 0 ? 1 : tween(frame, ringEnter, ringEnter + 18, 0, 1, EASE_OUT);
   const ringOut = ringExit == null ? 0 : tween(frame, ringExit - 14, ringExit, 0, 1, EASE_IN_OUT);
+  // A single swell and settle (no spring, no overshoot): 6 frames up, 18 frames back.
+  const pulse = pulseAt == null ? 0 : tween(frame, pulseAt, pulseAt + 6, 0, 1, EASE_OUT) * (1 - tween(frame, pulseAt + 6, pulseAt + 24, 0, 1, EASE_IN_OUT));
   return (
-    <div style={{ position: "absolute", left: c.left, top: c.cy, transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: c.ring * 0.32 }}>
-      <div style={{ position: "relative", width: c.ring, height: c.ring, opacity: ringIn * (1 - ringOut) }}>
-        <WeightRing size={c.ring} highlight={highlight} baseAlpha={0.42} strokeWidth={9} style={{ left: 0, top: 0 }} />
+    <div style={{ position: "absolute", left: c.left, top: c.cy, transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: c.ring * 0.28 }}>
+      <div style={{ position: "relative", width: c.ring, height: c.ring, opacity: ringIn * (1 - ringOut), transform: `scale(${1 + 0.06 * pulse})` }}>
+        <WeightRing size={c.ring} highlight={highlight} baseAlpha={0.25} strokeWidth={10} style={{ left: 0, top: 0 }} />
       </div>
       <Caption frame={frame} text={text} enter={enter} exit={exit} fontSize={c.fontSize} />
     </div>

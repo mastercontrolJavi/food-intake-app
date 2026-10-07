@@ -21,25 +21,26 @@ const heroD = sceneWindow("hero").durationInFrames;
 const logD = sceneWindow("log").durationInFrames;
 const waterClick = sceneBeat("water", 14);
 const panStart = waterClick + 90;
+const scoreUpdate = panStart + 54;
 
 const items: Item[] = [
   { scene: "hook", text: "Your day scored 95.", words: 4, kind: "display", opacity: kinetic(12, 3, hookD - 10) },
   { scene: "hook", text: "Why?", words: 1, kind: "display", opacity: kinetic(12 + 18, 4, hookD - 10) },
   { scene: "hook", text: "Ring labels (e.g. “Calories 30%”)", words: 2, kind: "ui-read", opacity: (f) => Math.min(tween(f, 26, 42), 1 - tween(f, hookD - 30, hookD - 14, 0, 1, EASE_IN_OUT)) },
   { scene: "hook", text: "95 / out of 100", words: 3, kind: "ui-read", opacity: (f) => Math.min(tween(f, 8, 28), 1 - tween(f, hookD - 26, hookD - 12, 0, 1, EASE_IN_OUT)) },
-  { scene: "log", text: "Log again in one tap.", words: 5, kind: "caption", opacity: caption(sceneBeat("log", 5.5), sceneBeat("log", 11.5)) },
+  { scene: "log", text: "Log again in one tap.", words: 5, kind: "caption", opacity: caption(sceneBeat("log", 5.2), logD) },
   { scene: "log", text: "“Log again” (button tapped)", words: 2, kind: "ui-read", opacity: span(0, sceneBeat("log", 7), 1) },
   { scene: "log", text: "New row title: Salmon, Potatoes And Greens", words: 4, kind: "ui-read", opacity: (f) => (f < sceneBeat("log", 7) ? 0 : tween(f, sceneBeat("log", 7) + 2, sceneBeat("log", 7) + 18, 0, 1, EASE_OUT)) },
   { scene: "log", text: "New row detail: 720 kcal · 48 g protein · Meal score 90", words: 8, kind: "ui-read", opacity: (f) => (f < sceneBeat("log", 7) ? 0 : tween(f, sceneBeat("log", 7) + 2, sceneBeat("log", 7) + 18, 0, 1, EASE_OUT)) },
-  { scene: "water", text: "Graded against goals you choose.", words: 5, kind: "caption", opacity: caption(sceneBeat("water", 12.5), sceneBeat("water", 19.5)) },
+  { scene: "water", text: "Graded against goals you choose.", words: 5, kind: "caption", opacity: caption(sceneBeat("water", 12.2), sceneBeat("water", 19.5)) },
   { scene: "water", text: "2,250 ml of 2,800 ml (after +500)", words: 5, kind: "ui-read", opacity: span(waterClick + 3, panStart + 27, 1) },
-  { scene: "water", text: "95 · A (score card)", words: 2, kind: "ui-read", opacity: span(panStart + 54 - 6, sceneWindow("water").durationInFrames, 1) },
-  { scene: "hero", text: "Transparent score breakdown (+ 7 rows, result)", words: 8, kind: "ui-read", opacity: span(6, heroD, 8) },
-  { scene: "hero", text: "Every point, explained.", words: 3, kind: "display", opacity: kinetic(sceneBeat("hero", 25.5), 2, heroD - 6) },
+  { scene: "water", text: "95 · A (score card; counts 93 → 95 once the pan settles)", words: 2, kind: "ui-read", opacity: span(scoreUpdate + 6, sceneWindow("water").durationInFrames, 1) },
+  { scene: "hero", text: "Transparent score breakdown (+ 7 rows, result)", words: 8, kind: "ui-read", opacity: span(12, heroD, 8) },
+  { scene: "hero", text: "Every point, explained.", words: 3, kind: "display", opacity: kinetic(sceneBeat("hero", 21.5), 2, heroD - 6) },
   { scene: "patterns", text: "Pattern insights · Deterministic observations with explicit evidence thresholds.", words: 8, kind: "ui-read", opacity: span(0, sceneWindow("patterns").durationInFrames, 1) },
   { scene: "patterns", text: "Insight title: Water target opportunity (+ badges Hydration · Moderate evidence)", words: 3, kind: "ui-read", opacity: span(0, sceneWindow("patterns").durationInFrames, 1) },
   { scene: "patterns", text: "Insight message: Water intake was below your configured target on 4 of 7 tracked days.", words: 13, kind: "ui-read", opacity: span(0, sceneWindow("patterns").durationInFrames, 1) },
-  { scene: "patterns", text: "Patterns, only with evidence.", words: 4, kind: "caption", opacity: caption(sceneBeat("patterns", 32.25), sceneWindow("patterns").durationInFrames + 20) },
+  { scene: "patterns", text: "Patterns, only with evidence.", words: 4, kind: "caption", opacity: caption(sceneBeat("patterns", 32.2), sceneWindow("patterns").durationInFrames + 20) },
   { scene: "hero", text: "Ring centre count-up → 95 / out of 100 (final value)", words: 3, kind: "ui-read", opacity: (f) => (f >= 60 + 6 * 18 + 12 ? 1 : 0) },
   { scene: "resolve", text: "Intake", words: 1, kind: "ui-read", opacity: (f) => tween(f, sceneBeat("resolve", 42), sceneBeat("resolve", 42) + 22, 0, 1, EASE_OUT) },
   { scene: "resolve", text: "Track with intention.", words: 3, kind: "display", opacity: kinetic(sceneBeat("resolve", 43), 2, null) },
