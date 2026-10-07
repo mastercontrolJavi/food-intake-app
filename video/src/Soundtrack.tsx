@@ -12,7 +12,9 @@ const FADE_START = DURATION_IN_FRAMES - Math.round(1.5 * FPS);
 const CLICKS = [
   { at: beat(6.5), volume: 0.07 }, // Log again (half-beat)
   { at: beat(14), volume: 0.12 }, // +500
-  { at: beat(20), volume: 0.5 }, // Why this score? (hero hit)
+  // Why this score?: on the mouse-down, 2 frames before the beat-20 hit, so the click and the kick transient
+  // never stack (mix peak −2.5 dBFS instead of +0.2).
+  { at: beat(20) - 2, volume: 0.3 },
 ];
 
 export function Soundtrack() {

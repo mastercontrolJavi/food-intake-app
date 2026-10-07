@@ -14,7 +14,7 @@ Structure (beats; 1 beat = 0.6 s):
   40     groove drops; sustained resolve chord
   43     single pluck (tagline)
   47.5–50 fade out
-Master peaks are normalised to -1.5 dBFS.
+Master peaks are normalised to -2.5 dBFS (headroom for clicks and AAC; final mix verified ≤ -1 dBFS).
 """
 import math
 import os
@@ -177,7 +177,7 @@ for b2 in range(24, 80):
 
 # Swell into the hero hit, then the hit itself on beat 20.
 add(music, t_of(16), swell(4 * BEAT), gain=0.11)
-add(music, t_of(20), kick(1.0, 0.7))
+add(music, t_of(20), kick(0.72, 0.7))
 add(music, t_of(20), sub(midi(38), 3.0), gain=0.38)
 add(music, t_of(20), pad([midi(n) for n in [62, 66, 69, 73, 76]], 2.0, attack=0.02, release=1.6), gain=0.18)
 
@@ -188,7 +188,7 @@ music[fade_start:] *= np.linspace(1, 0, N - fade_start)[:, None] ** 1.5
 # Master: soft clip + normalise to -1.5 dBFS.
 music = np.tanh(music * 1.4) / np.tanh(1.4)
 peak = np.abs(music).max()
-music *= (10 ** (-1.5 / 20)) / peak
+music *= (10 ** (-2.5 / 20)) / peak  # headroom for the UI clicks + AAC inter-sample peaks
 
 
 def write(path, data):
